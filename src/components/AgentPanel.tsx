@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Send, X, MessageCircle } from "lucide-react";
-import { toast } from "sonner";
+import { Send, X, MessageCircle, Loader2 } from "lucide-react";
 import { useCrm } from "@/contexts/CrmContext";
 
 interface Message {
@@ -8,366 +7,176 @@ interface Message {
   text: string;
 }
 
-interface ToolCall {
-  id: string;
-  function: {
-    name: string;
-    arguments: string;
-  };
-}
+const quickCommands = ["estado proyectos", "deadlines", "nuevo cliente", "cotizacion", "analiza negocio"];
 
-const quickCommands = ["estado proyectos", "deadlines", "nuevo cliente", "cotización", "recomendar"];
+const SYSTEM_PROMPT = `Eres el Agente NEBU, asistente ejecutivo interno de Nebu Studio, agencia de desarrollo web en Mexico fundada por Josep Cuatrecasas.
 
-const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/agent-chat`;
+PERSONALIDAD: Directo, sin rodeos. Enfocado en resultados. Honesto aunque sea incomodo. Sin adulacion. Sin frases corporativas vacias. Eficiente - respuestas cortas cuando la situacion lo permite. Tu lealtad es al negocio, no al ego. Idioma: Espanol siempre.
 
-const initialMessage: Message = {
-  role: "agent",
-  text: `— Resumen de operaciones activas:
+DATOS EMPRESA:
+— Nebu Studio | Agencia de desarrollo web | Mexico
+— Fundador/CEO: Josep Cuatrecasas
+— Equipo: Samuel (Dev/Ops), Fer (Disenadora), Olivia (Vendedora LinkedIn MX activa), Ali Hassan (Vendedor Dubai - potencial), Rodrigo (Vendedor Alemania - potencial)
+— Politica de pago: Siempre factura 50% anticipo.
 
-— Raw Paw (NB-001): E-commerce + Branding · $25,000 MXN · Paso 7/12 (Revisión)
-  ⚠ En revisión — pendiente aprobación del cliente. Seguimiento recomendado.
-— Papachoa (NB-002): Landing + Social Media · $22,500 MXN · Paso 5/12 (Research)
-— Bazar Centenario (NB-003): Identidad + Web vitrina · $12,500 MXN · Paso 3/12 (Contrato)
+SERVICIOS Y PRECIOS:
+— Branding: $8,000-$15,000+ MXN | 5-10 dias
+— Landing Page de Ventas: $20,000-$35,000+ | 10-20 dias
+— E-commerce/Tienda: $35,000-$80,000+ | 15-30 dias
+— Web App/SaaS a Medida: $80,000-$500,000+ | 6-16+ semanas
+— Mantenimiento: $1,500-$5,000/mes
+— Politica de pago: 50% anticipo para iniciar. 50% contra entrega final. Sin excepciones.
 
-Pendiente de cobro: $12,500 MXN (Bazar Centenario)
-Pipeline: 5 leads activos.
+FUNNEL 12 PASOS:
+1.Contacto Inicial 2.Reunion Diagnostico 3.Propuesta Enviada 4.Asignacion Proyecto 5.Cuestionario Implementacion 6.PDF Final 7.Contrato+50%Anticipo 8.Inicio+Lista Semanal 9.Avances Semanales 10.Ronda Final Cambios 11.Entrega Final+Launch 12.Mantenimiento Mensual
 
-💡 Puedo ejecutar acciones: cambiar estados, avanzar funnel, agregar leads o proyectos. Solo pídelo.`,
-};
+PROYECTOS ACTUALES:
+— NB-001|Raw Paw|E-commerce+Branding|Josep,Samuel|$25,000|Anticipo $12,500 pagado|Paso 10|Entregado-En revision cliente|rawpaw.mx|Mantenimiento:Si
+— NB-002|Papachoa|Landing+Social Media|Josep,Fer|$22,500|Anticipo $11,250 pagado|Paso 8|En proceso VENCIDA(est.10Feb2026)
+— NB-003|Bazar Centenario|Plataforma Integral|Josep,Samuel|$25,000|Anticipo $12,500 pagado|Saldo $12,500|En proceso VENCIDA(est.23Feb2026)
 
-interface StreamResult {
-  content: string;
-  toolCalls: ToolCall[];
-}
+REGLAS DE COMUNICACION:
+— Si necesitas datos del usuario, haz preguntas para capturar info. Una por una.
+— Antes de ejecutar acciones, muestra resumen y espera "si" explicito.
+— Cero adulacion. No dices "excelente pregunta" por default.
+— Si no sabes, preguntas.
+— Usas — para listas, no asteriscos ni puntos. Usas ⚠ para alertas. Sin emojis decorativos. Sin muros de texto.
 
-async function streamChat(
-  messages: { role: string; content: string; tool_call_id?: string }[],
-  crmContext: string,
-  onDelta: (text: string) => void,
-  onDone: (result: StreamResult) => void,
-  onError: (err: string) => void
-) {
-  const resp = await fetch(CHAT_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-    },
-    body: JSON.stringify({ messages, crmContext }),
-  });
+ACCIONES DISPONIBLES:
+— "estado proyectos": Resumen con alertas
+— "deadlines": Que vence y cuando
+— "actualiza [proyecto] al paso [#]": Actualizas y dices siguiente paso critico
+— "cotizacion para [desc]": Generas cotizacion completa sin pedir permiso
+— "mensaje para [nombre] via WhatsApp, LinkedIn o correo": Mensaje al cliente
 
-  if (!resp.ok) {
-    let errorMsg = "Error del agente";
-    try {
-      const errData = await resp.json();
-      errorMsg = errData.error || errorMsg;
-    } catch {
-      errorMsg = `Error ${resp.status}`;
-    }
-    onError(errorMsg);
-    return;
-  }
-
-  if (!resp.body) {
-    onError("No se recibió respuesta del agente.");
-    return;
-  }
-
-  const reader = resp.body.getReader();
-  const decoder = new TextDecoder();
-  let textBuffer = "";
-  let streamDone = false;
-  let fullContent = "";
-  const toolCalls: Record<number, ToolCall> = {};
-
-  while (!streamDone) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    textBuffer += decoder.decode(value, { stream: true });
-
-    let newlineIndex: number;
-    while ((newlineIndex = textBuffer.indexOf("\n")) !== -1) {
-      let line = textBuffer.slice(0, newlineIndex);
-      textBuffer = textBuffer.slice(newlineIndex + 1);
-
-      if (line.endsWith("\r")) line = line.slice(0, -1);
-      if (line.startsWith(":") || line.trim() === "") continue;
-      if (!line.startsWith("data: ")) continue;
-
-      const jsonStr = line.slice(6).trim();
-      if (jsonStr === "[DONE]") {
-        streamDone = true;
-        break;
-      }
-
-      try {
-        const parsed = JSON.parse(jsonStr);
-        const choice = parsed.choices?.[0];
-        if (!choice) continue;
-
-        const delta = choice.delta;
-
-        // Text content
-        if (delta?.content) {
-          fullContent += delta.content;
-          onDelta(delta.content);
-        }
-
-        // Tool calls
-        if (delta?.tool_calls) {
-          for (const tc of delta.tool_calls) {
-            const idx = tc.index ?? 0;
-            if (!toolCalls[idx]) {
-              toolCalls[idx] = { id: tc.id || "", function: { name: "", arguments: "" } };
-            }
-            if (tc.id) toolCalls[idx].id = tc.id;
-            if (tc.function?.name) toolCalls[idx].function.name += tc.function.name;
-            if (tc.function?.arguments) toolCalls[idx].function.arguments += tc.function.arguments;
-          }
-        }
-      } catch {
-        textBuffer = line + "\n" + textBuffer;
-        break;
-      }
-    }
-  }
-
-  // Flush remaining
-  if (textBuffer.trim()) {
-    for (let raw of textBuffer.split("\n")) {
-      if (!raw) continue;
-      if (raw.endsWith("\r")) raw = raw.slice(0, -1);
-      if (raw.startsWith(":") || raw.trim() === "") continue;
-      if (!raw.startsWith("data: ")) continue;
-      const jsonStr = raw.slice(6).trim();
-      if (jsonStr === "[DONE]") continue;
-      try {
-        const parsed = JSON.parse(jsonStr);
-        const content = parsed.choices?.[0]?.delta?.content;
-        if (content) {
-          fullContent += content;
-          onDelta(content);
-        }
-      } catch { /* ignore */ }
-    }
-  }
-
-  onDone({ content: fullContent, toolCalls: Object.values(toolCalls) });
-}
+FORMATO COTIZACION:
+Cotizacion — Nebu Studio
+Cliente: [nombre] | Fecha: [hoy] | Valida: 7 dias
+[tabla servicios con precios]
+50% anticipo: $[Monto/2] MXN
+50% contra entrega: $[Monto/2] MXN
+Firma: Josep - Nebu Studio`;
 
 const AgentPanel = () => {
-  const [messages, setMessages] = useState<Message[]>([initialMessage]);
+  const [messages, setMessages] = useState<Message[]>([{
+    role: "agent",
+    text: `Proyectos activos:\n⚠️ Papachoa — En proceso, VENCIDA (est. 10 Feb 2026). Requiere accion.\n⚠️ Bazar Centenario — En proceso, VENCIDA (est. 23 Feb 2026). Saldo pendiente: $12,500 MXN.\n✅ Raw Paw — Entregado, en revision cliente. Mantenimiento activo.\n\nQue necesitas resolver hoy?`,
+  }]);
   const [input, setInput] = useState("");
-  const [streaming, setStreaming] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const assistantBuffer = useRef("");
-  const conversationRef = useRef<{ role: string; content: string; tool_call_id?: string }[]>([]);
-
-  const { actions, buildContextSummary } = useCrm();
+  const { buildContextSummary } = useCrm();
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages, streaming]);
+  }, [messages]);
 
-  const executeToolCall = useCallback((toolCall: ToolCall): string => {
-    try {
-      const args = JSON.parse(toolCall.function.arguments);
-      switch (toolCall.function.name) {
-        case "update_project_status":
-          return actions.updateProjectStatus(args.project_id, args.status);
-        case "advance_funnel":
-          return actions.advanceFunnel(args.project_id);
-        case "add_lead":
-          return actions.addLead(args);
-        case "move_lead":
-          return actions.moveLead(args.lead_id, args.etapa);
-        case "add_project":
-          return actions.addProject({
-            ...args,
-            estado: "activo",
-            pasoFunnel: 1,
-          });
-        default:
-          return `⚠ Acción desconocida: ${toolCall.function.name}`;
-      }
-    } catch (e) {
-      return `⚠ Error ejecutando acción: ${e instanceof Error ? e.message : "desconocido"}`;
-    }
-  }, [actions]);
-
-  const sendMessage = async (text: string) => {
-    if (!text.trim() || streaming) return;
-    const userMsg: Message = { role: "user", text: text.trim() };
-    setMessages((prev) => [...prev, userMsg]);
+  const sendMessage = useCallback(async (text: string) => {
+    if (!text.trim() || loading) return;
+    const userMsg: Message = { role: "user", text };
+    setMessages(prev => [...prev, userMsg]);
     setInput("");
-    setStreaming(true);
-    assistantBuffer.current = "";
+    setLoading(true);
 
-    conversationRef.current.push({ role: "user", content: text.trim() });
+    const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY;
+    if (!apiKey) {
+      setMessages(prev => [...prev, { role: "agent", text: "API key no configurada. Agrega VITE_ANTHROPIC_API_KEY." }]);
+      setLoading(false);
+      return;
+    }
 
-    const processStream = async (apiMessages: { role: string; content: string; tool_call_id?: string }[]) => {
-      return new Promise<StreamResult>((resolve, reject) => {
-        streamChat(
-          apiMessages,
-          buildContextSummary(),
-          (chunk) => {
-            assistantBuffer.current += chunk;
-            const currentText = assistantBuffer.current;
-            setMessages((prev) => {
-              const last = prev[prev.length - 1];
-              if (last?.role === "agent" && prev.length > 1 && prev[prev.length - 2]?.role === "user") {
-                return prev.map((m, i) =>
-                  i === prev.length - 1 ? { ...m, text: currentText } : m
-                );
-              }
-              return [...prev, { role: "agent", text: currentText }];
-            });
-          },
-          resolve,
-          (err) => reject(new Error(err))
-        );
-      });
-    };
+    const crmContext = buildContextSummary();
+    const today = new Date().toLocaleDateString("es-MX", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+    const fullSystem = SYSTEM_PROMPT + `\n\nFECHA HOY: ${today}\n\nESTADO ACTUAL CRM:\n${crmContext}`;
+
+    const apiMessages = messages.map(m => ({ role: m.role === "agent" ? "assistant" as const : "user" as const, content: m.text }));
+    apiMessages.push({ role: "user", content: text });
 
     try {
-      const result = await processStream([...conversationRef.current]);
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": apiKey,
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true",
+        },
+        body: JSON.stringify({
+          model: "claude-3-5-sonnet-20241022",
+          system: fullSystem,
+          messages: [...apiMessages, { role: "user", content: text }],
+          max_tokens: 2048,
+        }),
+      });
 
-      // Handle tool calls
-      if (result.toolCalls.length > 0) {
-        // Add assistant message with tool calls to conversation
-        conversationRef.current.push({
-          role: "assistant",
-          content: result.content || "",
-        });
+      const data = await res.json().catch(() => ({}));
 
-        // Execute each tool call and collect results
-        const toolResults: string[] = [];
-        for (const tc of result.toolCalls) {
-          const toolResult = executeToolCall(tc);
-          toolResults.push(toolResult);
-
-          // Add tool result to conversation
-          conversationRef.current.push({
-            role: "tool",
-            content: toolResult,
-            tool_call_id: tc.id,
-          });
-        }
-
-        // Show tool results as system feedback
-        const actionSummary = toolResults.join("\n");
-        setMessages((prev) => {
-          const last = prev[prev.length - 1];
-          if (last?.role === "agent") {
-            const newText = (last.text ? last.text + "\n\n" : "") + actionSummary;
-            return prev.map((m, i) =>
-              i === prev.length - 1 ? { ...m, text: newText } : m
-            );
-          }
-          return [...prev, { role: "agent", text: actionSummary }];
-        });
-
-        // Get follow-up from agent after tool execution
-        assistantBuffer.current = "";
-        const followUp = await processStream([...conversationRef.current]);
-
-        if (followUp.content) {
-          conversationRef.current.push({ role: "assistant", content: followUp.content });
-        }
-      } else if (result.content) {
-        conversationRef.current.push({ role: "assistant", content: result.content });
+      if (!res.ok) {
+        throw new Error(data.error?.message || `Error ${res.status}`);
       }
+
+      setMessages(prev => [...prev, { role: "agent", text: data.content?.[0]?.text ?? "Sin respuesta." }]);
     } catch (e) {
-      console.error("Stream error:", e);
-      toast.error(e instanceof Error ? e.message : "Error de conexión con el agente");
+      setMessages(prev => [...prev, { role: "agent", text: `Error: ${e instanceof Error ? e.message : "desconocido"}` }]);
     } finally {
-      setStreaming(false);
+      setLoading(false);
     }
-  };
+  }, [messages, loading, buildContextSummary]);
 
   return (
     <>
-      {/* Floating button */}
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 flex items-center justify-center transition-all hover:scale-105 active:scale-95"
-          aria-label="Abrir chat del agente"
+          className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-red-600 hover:bg-red-700 text-white shadow-2xl flex items-center justify-center transition-all"
+          aria-label="Abrir chat"
         >
           <MessageCircle size={24} />
         </button>
       )}
 
-      {/* Backdrop mobile */}
       {open && (
-        <div className="fixed inset-0 bg-black/60 z-40 lg:bg-black/40" onClick={() => setOpen(false)} />
-      )}
-
-      {/* Chat panel */}
-      {open && (
-        <aside
-          className="fixed bottom-0 right-0 lg:bottom-6 lg:right-6 z-50 w-full lg:w-[400px] h-[85vh] lg:h-[600px] lg:max-h-[80vh] bg-nebu-carbon border border-nebu-border lg:rounded-xl shadow-2xl flex flex-col overflow-hidden animate-fade-up"
-        >
+        <div className="fixed bottom-24 right-6 z-50 w-96 max-h-[600px] bg-[#111111] border border-[#2a2a2a] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
           {/* Header */}
-          <div className="h-14 flex items-center gap-3 px-4 border-b border-nebu-border shrink-0">
-            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center font-display text-sm text-primary-foreground">
-              N
+          <div className="flex items-center gap-3 px-4 py-3 border-b border-[#2a2a2a] bg-[#0d0d0d]">
+            <div className="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center text-white font-bold text-sm">N</div>
+            <div className="flex-1">
+              <div className="text-white font-bold text-sm">Agente NEBU</div>
+              <div className="text-[#666] text-xs">Claude · Nebu Studio</div>
             </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-medium">Agente NEBU</div>
-              <div className="text-[10px] font-mono text-nebu-text-dim truncate">
-                Gemini · Flash · Operaciones activas
-              </div>
-            </div>
-            <button
-              onClick={() => setOpen(false)}
-              className="p-1 hover:bg-nebu-surface rounded transition-colors"
-              aria-label="Cerrar chat"
-            >
-              <X size={16} />
-            </button>
+            <button onClick={() => setOpen(false)} className="ml-auto text-[#666] hover:text-white"><X size={18} /></button>
           </div>
 
           {/* Messages */}
-          <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3">
+          <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3 min-h-0">
             {messages.map((msg, i) => (
-              <div
-                key={i}
-                className={`${msg.role === "user" ? "flex justify-end" : ""}`}
-              >
-                <div
-                  className={`
-                    text-xs leading-relaxed whitespace-pre-wrap rounded-md px-3 py-2 max-w-[90%]
-                    ${msg.role === "agent"
-                      ? "bg-nebu-surface text-foreground font-mono"
-                      : "bg-primary/10 text-foreground border border-primary/20"
-                    }
-                  `}
-                >
+              <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                <div className={`text-xs leading-relaxed whitespace-pre-wrap rounded-lg px-3 py-2 max-w-[85%] ${
+                  msg.role === "user" ? "bg-red-600 text-white" : "bg-[#1a1a1a] text-[#e8e8e8] border border-[#2a2a2a]"
+                }`}>
                   {msg.text}
                 </div>
               </div>
             ))}
-            {streaming && messages[messages.length - 1]?.role !== "agent" && (
-              <div className="flex items-center gap-1 px-3 py-2">
-                <span className="typing-dot w-1.5 h-1.5 rounded-full bg-nebu-muted" />
-                <span className="typing-dot w-1.5 h-1.5 rounded-full bg-nebu-muted" />
-                <span className="typing-dot w-1.5 h-1.5 rounded-full bg-nebu-muted" />
+            {loading && (
+              <div className="flex justify-start">
+                <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl px-3 py-2">
+                  <Loader2 size={14} className="animate-spin text-[#666]" />
+                </div>
               </div>
             )}
           </div>
 
           {/* Quick commands */}
-          <div className="px-4 pb-2 flex flex-wrap gap-1.5">
-            {quickCommands.map((cmd) => (
+          <div className="px-4 pb-2 flex flex-wrap gap-1.5 bg-[#1a1a1a]">
+            {quickCommands.map(cmd => (
               <button
                 key={cmd}
                 onClick={() => sendMessage(cmd)}
-                disabled={streaming}
-                className="text-[10px] font-mono px-2 py-1 rounded border border-nebu-border text-nebu-text-dim hover:border-primary hover:text-primary transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                className="text-xs px-2 py-1 rounded-full border border-[#333] text-[#999] hover:text-white hover:border-red-600 transition-colors"
               >
                 {cmd}
               </button>
@@ -375,28 +184,23 @@ const AgentPanel = () => {
           </div>
 
           {/* Input */}
-          <div className="p-3 border-t border-nebu-border">
-            <form
-              onSubmit={(e) => { e.preventDefault(); sendMessage(input); }}
-              className="flex gap-2"
+          <form onSubmit={e => { e.preventDefault(); sendMessage(input); }} className="flex items-center gap-2 p-3 border-t border-[#2a2a2a]">
+            <input
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              placeholder="Escribe al agente..."
+              className="flex-1 bg-[#1a1a1a] border border-[#333] rounded-lg px-3 py-2 text-sm text-white placeholder-[#555] focus:outline-none focus:border-red-600"
+              disabled={loading}
+            />
+            <button
+              type="submit"
+              disabled={loading || !input.trim()}
+              className="w-9 h-9 rounded-lg bg-red-600 hover:bg-red-700 disabled:opacity-40 flex items-center justify-center transition-colors"
             >
-              <input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Escribe al agente..."
-                disabled={streaming}
-                className="flex-1 bg-nebu-surface border border-nebu-border rounded px-3 py-2 text-xs font-mono text-foreground placeholder:text-nebu-muted focus:border-primary focus:outline-none transition-colors disabled:opacity-50"
-              />
-              <button
-                type="submit"
-                disabled={!input.trim() || streaming}
-                className="p-2 rounded bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-              >
-                <Send size={14} />
-              </button>
-            </form>
-          </div>
-        </aside>
+              <Send size={14} className="text-white" />
+            </button>
+          </form>
+        </div>
       )}
     </>
   );
