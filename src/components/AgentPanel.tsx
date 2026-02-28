@@ -81,13 +81,6 @@ const AgentPanel = () => {
     setInput("");
     setLoading(true);
 
-    const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY;
-    if (!apiKey) {
-      setMessages(prev => [...prev, { role: "agent", text: "API key no configurada. Agrega VITE_ANTHROPIC_API_KEY." }]);
-      setLoading(false);
-      return;
-    }
-
     const crmContext = buildContextSummary();
     const today = new Date().toLocaleDateString("es-MX", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
     const fullSystem = SYSTEM_PROMPT + `\n\nFECHA HOY: ${today}\n\nESTADO ACTUAL CRM:\n${crmContext}`;
@@ -96,26 +89,22 @@ const AgentPanel = () => {
     apiMessages.push({ role: "user", content: text });
 
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/agent-chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": apiKey,
-          "anthropic-version": "2023-06-01",
-          "anthropic-dangerous-direct-browser-access": "true",
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
         body: JSON.stringify({
-          model: "claude-3-5-sonnet-20241022",
-          system: fullSystem,
-          messages: [...apiMessages, { role: "user", content: text }],
-          max_tokens: 2048,
+          messages: apiMessages,
+          systemPrompt: fullSystem,
         }),
       });
 
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        throw new Error(data.error?.message || `Error ${res.status}`);
+        throw new Error(data.error || `Error ${res.status}`);
       }
 
       setMessages(prev => [...prev, { role: "agent", text: data.content?.[0]?.text ?? "Sin respuesta." }]);
