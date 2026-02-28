@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { servicios, projects } from "@/data/mock";
+import { useCrm } from "@/contexts/CrmContext";
 
-function mockCotizacion(data: { cliente: string; negocio: string; servicio: string; dolor: string; notas: string }): string {
+function mockCotizacion(data: { cliente: string; negocio: string; servicio: string; dolor: string; notas: string }, rango: string): string {
   return `■ COTIZACIÓN — ${data.negocio.toUpperCase()}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -19,7 +19,7 @@ function mockCotizacion(data: { cliente: string; negocio: string; servicio: stri
   — Soporte post-entrega por 30 días
 
 — Inversión estimada:
-  ${servicios.find((s) => s.label === data.servicio)?.rango || "$10,000 — $20,000 MXN"}
+  ${rango}
 
 — Tiempo de entrega: 4–6 semanas
 — Incluye: 2 rondas de revisión
@@ -49,9 +49,10 @@ function mockUpdate(data: { proyecto: string; cliente: string; completado: strin
 }
 
 const CotizacionesPage = () => {
-  const [cotForm, setCotForm] = useState({ cliente: "", negocio: "", servicio: servicios[0].label, dolor: "", notas: "" });
+  const { state } = useCrm();
+  const [cotForm, setCotForm] = useState({ cliente: "", negocio: "", servicio: state.servicios[0].label, dolor: "", notas: "" });
   const [cotOutput, setCotOutput] = useState("");
-  const [updForm, setUpdForm] = useState({ proyecto: projects[0].id, cliente: projects[0].cliente, completado: "", proxima: "", necesito: "" });
+  const [updForm, setUpdForm] = useState({ proyecto: state.projects[0]?.id || "", cliente: state.projects[0]?.cliente || "", completado: "", proxima: "", necesito: "" });
   const [updOutput, setUpdOutput] = useState("");
 
   return (
@@ -85,7 +86,7 @@ const CotizacionesPage = () => {
               onChange={(e) => setCotForm((p) => ({ ...p, servicio: e.target.value }))}
               className="w-full bg-nebu-surface border border-nebu-border rounded px-3 py-2 text-xs font-mono text-foreground focus:border-primary focus:outline-none"
             >
-              {servicios.map((s) => (
+              {state.servicios.map((s) => (
                 <option key={s.label} value={s.label}>{s.label} — {s.rango}</option>
               ))}
             </select>
@@ -104,7 +105,10 @@ const CotizacionesPage = () => {
               className="w-full bg-nebu-surface border border-nebu-border rounded px-3 py-2 text-xs font-mono placeholder:text-nebu-muted focus:border-primary focus:outline-none resize-none"
             />
             <button
-              onClick={() => setCotOutput(mockCotizacion(cotForm))}
+              onClick={() => {
+                const rango = state.servicios.find((s) => s.label === cotForm.servicio)?.rango || "$10,000 — $20,000 MXN";
+                setCotOutput(mockCotizacion(cotForm, rango));
+              }}
               disabled={!cotForm.cliente || !cotForm.negocio || !cotForm.dolor}
               className="w-full bg-primary text-primary-foreground font-mono text-xs py-2.5 rounded hover:bg-primary/90 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
             >
@@ -125,12 +129,12 @@ const CotizacionesPage = () => {
             <select
               value={updForm.proyecto}
               onChange={(e) => {
-                const p = projects.find((pr) => pr.id === e.target.value);
+                const p = state.projects.find((pr) => pr.id === e.target.value);
                 setUpdForm((prev) => ({ ...prev, proyecto: e.target.value, cliente: p?.cliente || "" }));
               }}
               className="w-full bg-nebu-surface border border-nebu-border rounded px-3 py-2 text-xs font-mono text-foreground focus:border-primary focus:outline-none"
             >
-              {projects.map((p) => (
+              {state.projects.map((p) => (
                 <option key={p.id} value={p.id}>{p.id} — {p.cliente}</option>
               ))}
             </select>

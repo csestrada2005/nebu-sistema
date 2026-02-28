@@ -1,4 +1,4 @@
-import { projects, funnelSteps } from "@/data/mock";
+import { useCrm } from "@/contexts/CrmContext";
 
 const estadoColors: Record<string, string> = {
   activo: "bg-nebu-green/10 text-nebu-green border-nebu-green/20",
@@ -8,6 +8,8 @@ const estadoColors: Record<string, string> = {
 };
 
 const ProyectosPage = () => {
+  const { state } = useCrm();
+
   return (
     <div className="space-y-6">
       <div>
@@ -18,12 +20,11 @@ const ProyectosPage = () => {
       </div>
 
       <div className="grid gap-4">
-        {projects.map((project) => (
+        {state.projects.map((project) => (
           <div
             key={project.id}
             className="bg-nebu-surface border border-nebu-border rounded-md p-5 hover:border-primary/30 transition-colors animate-fade-up"
           >
-            {/* Header */}
             <div className="flex items-start justify-between mb-4">
               <div>
                 <div className="flex items-center gap-2 mb-1">
@@ -41,9 +42,8 @@ const ProyectosPage = () => {
               </div>
             </div>
 
-            {/* Funnel Grid */}
             <div className="grid grid-cols-12 gap-1.5 mb-3">
-              {funnelSteps.map((step, i) => (
+              {state.funnelSteps.map((step, i) => (
                 <div
                   key={i}
                   className={`
@@ -60,9 +60,8 @@ const ProyectosPage = () => {
               ))}
             </div>
 
-            {/* Info */}
             <div className="font-mono text-xs text-nebu-text-dim">
-              Paso actual: {project.pasoFunnel} — {funnelSteps[project.pasoFunnel - 1]}
+              Paso actual: {project.pasoFunnel} — {state.funnelSteps[project.pasoFunnel - 1]}
               {project.stack && <span className="ml-3 text-nebu-muted">· Stack: {project.stack}</span>}
             </div>
           </div>

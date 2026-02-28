@@ -2,10 +2,9 @@ import { Menu } from "lucide-react";
 
 interface TopbarProps {
   onToggleSidebar: () => void;
-  onToggleAgent: () => void;
 }
 
-const Topbar = ({ onToggleSidebar, onToggleAgent }: TopbarProps) => {
+const Topbar = ({ onToggleSidebar }: TopbarProps) => {
   return (
     <header className="h-14 border-b border-nebu-border bg-nebu-carbon flex items-center justify-between px-4 z-50">
       <div className="flex items-center gap-3">
@@ -30,12 +29,6 @@ const Topbar = ({ onToggleSidebar, onToggleAgent }: TopbarProps) => {
         </div>
         <span className="text-nebu-text-dim">PROYECTOS: <span className="text-foreground">3</span></span>
         <span className="text-nebu-text-dim">PENDIENTES: <span className="text-nebu-amber">$12,500 MXN</span></span>
-        <button
-          onClick={onToggleAgent}
-          className="lg:hidden p-1.5 rounded hover:bg-nebu-surface transition-colors text-foreground"
-        >
-          AGENTE
-        </button>
       </div>
     </header>
   );

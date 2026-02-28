@@ -1,4 +1,4 @@
-import { pipelineLeads } from "@/data/mock";
+import { useCrm } from "@/contexts/CrmContext";
 
 const columns = [
   { id: "prospecto" as const, label: "PROSPECTO" },
@@ -8,6 +8,8 @@ const columns = [
 ];
 
 const PipelinePage = () => {
+  const { state } = useCrm();
+
   return (
     <div className="space-y-6">
       <div>
@@ -19,7 +21,7 @@ const PipelinePage = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
         {columns.map((col) => {
-          const leads = pipelineLeads.filter((l) => l.etapa === col.id);
+          const leads = state.leads.filter((l) => l.etapa === col.id);
           return (
             <div key={col.id} className="space-y-2">
               <div className="flex items-center justify-between px-1 mb-1">
