@@ -8,11 +8,14 @@ export default {
     container: {
       center: true,
       padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
+      screens: { "2xl": "1400px" },
     },
     extend: {
+      fontFamily: {
+        display: ['"Bebas Neue"', 'sans-serif'],
+        mono: ['"DM Mono"', 'monospace'],
+        sans: ['"DM Sans"', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -57,6 +60,20 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        nebu: {
+          red: "hsl(var(--red))",
+          "red-dim": "hsl(var(--red-dim))",
+          black: "hsl(var(--black))",
+          carbon: "hsl(var(--carbon))",
+          surface: "hsl(var(--surface))",
+          border: "hsl(var(--nebu-border))",
+          muted: "hsl(var(--nebu-muted))",
+          text: "hsl(var(--text))",
+          "text-dim": "hsl(var(--text-dim))",
+          cream: "hsl(var(--cream))",
+          green: "hsl(var(--green))",
+          amber: "hsl(var(--amber))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -65,20 +82,12 @@ export default {
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
         },
       },
       animation: {
