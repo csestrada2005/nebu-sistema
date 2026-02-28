@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
-import { Project, projects as initialProjects, funnelSteps } from "@/data/mock";
+import { Project, funnelSteps } from "@/data/mock";
+import { useCrm } from "@/contexts/CrmContext";
 
 const estadoColors: Record<string, string> = {
   activo: "bg-nebu-green/10 text-nebu-green border-nebu-green/20",
@@ -13,35 +14,26 @@ const editableColumns = ["cliente", "servicio", "precio", "entregaEst", "respons
 type EditableCol = typeof editableColumns[number];
 
 const ProjectTable = () => {
-  const [data, setData] = useState<Project[]>(initialProjects);
+  const { state, actions } = useCrm();
   const [editing, setEditing] = useState<{ row: number; col: EditableCol } | null>(null);
 
-  const handleEdit = (rowIdx: number, col: EditableCol, value: string) => {
-    setData((prev) =>
-      prev.map((p, i) =>
-        i === rowIdx
-          ? { ...p, [col]: col === "precio" ? Number(value) || p.precio : value }
-          : p
-      )
-    );
+  const handleEdit = (projectId: string, col: EditableCol, value: string) => {
+    actions.updateProject(projectId, {
+      [col]: col === "precio" ? Number(value) || 0 : value,
+    });
     setEditing(null);
   };
 
   const addProject = () => {
-    const newId = `NB-${String(data.length + 1).padStart(3, "0")}`;
-    setData((prev) => [
-      ...prev,
-      {
-        id: newId,
-        cliente: "Nuevo Cliente",
-        servicio: "Servicio pendiente",
-        precio: 0,
-        estado: "activo",
-        pasoFunnel: 1,
-        entregaEst: "—",
-        responsable: "—",
-      },
-    ]);
+    actions.addProject({
+      cliente: "Nuevo Cliente",
+      servicio: "Servicio pendiente",
+      precio: 0,
+      estado: "activo",
+      pasoFunnel: 1,
+      entregaEst: "—",
+      responsable: "—",
+    });
   };
 
   return (
@@ -66,7 +58,7 @@ const ProjectTable = () => {
             </tr>
           </thead>
           <tbody>
-            {data.map((project, rowIdx) => (
+            {state.projects.map((project, rowIdx) => (
               <tr
                 key={project.id}
                 className="border-b border-nebu-border last:border-0 hover:bg-nebu-surface/30 transition-colors"
@@ -82,7 +74,7 @@ const ProjectTable = () => {
                       <input
                         autoFocus
                         defaultValue={project[col] as string}
-                        onBlur={(e) => handleEdit(rowIdx, col, e.target.value)}
+                        onBlur={(e) => handleEdit(project.id, col, e.target.value)}
                         onKeyDown={(e) => e.key === "Enter" && (e.target as HTMLInputElement).blur()}
                         className="bg-nebu-surface border border-primary/30 rounded px-1.5 py-0.5 text-xs w-full focus:outline-none"
                       />
@@ -100,7 +92,7 @@ const ProjectTable = () => {
                       autoFocus
                       type="number"
                       defaultValue={project.precio}
-                      onBlur={(e) => handleEdit(rowIdx, "precio", e.target.value)}
+                      onBlur={(e) => handleEdit(project.id, "precio", e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && (e.target as HTMLInputElement).blur()}
                       className="bg-nebu-surface border border-primary/30 rounded px-1.5 py-0.5 text-xs w-20 focus:outline-none"
                     />
@@ -131,7 +123,7 @@ const ProjectTable = () => {
                     <input
                       autoFocus
                       defaultValue={project.entregaEst}
-                      onBlur={(e) => handleEdit(rowIdx, "entregaEst", e.target.value)}
+                      onBlur={(e) => handleEdit(project.id, "entregaEst", e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && (e.target as HTMLInputElement).blur()}
                       className="bg-nebu-surface border border-primary/30 rounded px-1.5 py-0.5 text-xs w-24 focus:outline-none"
                     />
@@ -147,7 +139,7 @@ const ProjectTable = () => {
                     <input
                       autoFocus
                       defaultValue={project.responsable}
-                      onBlur={(e) => handleEdit(rowIdx, "responsable", e.target.value)}
+                      onBlur={(e) => handleEdit(project.id, "responsable", e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && (e.target as HTMLInputElement).blur()}
                       className="bg-nebu-surface border border-primary/30 rounded px-1.5 py-0.5 text-xs w-20 focus:outline-none"
                     />

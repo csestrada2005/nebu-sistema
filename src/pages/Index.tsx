@@ -6,6 +6,7 @@ import DashboardPage from "@/pages/DashboardPage";
 import ProyectosPage from "@/pages/ProyectosPage";
 import PipelinePage from "@/pages/PipelinePage";
 import CotizacionesPage from "@/pages/CotizacionesPage";
+import { CrmProvider } from "@/contexts/CrmContext";
 
 type Page = "dashboard" | "proyectos" | "pipeline" | "cotizaciones";
 
@@ -19,40 +20,31 @@ const pages: Record<Page, React.ComponentType> = {
 const Index = () => {
   const [activePage, setActivePage] = useState<Page>("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [agentOpen, setAgentOpen] = useState(false);
 
   const ActiveComponent = pages[activePage];
 
   return (
-    <div className="h-screen flex flex-col bg-background overflow-hidden">
-      {/* Topbar */}
-      <Topbar
-        onToggleSidebar={() => setSidebarOpen((p) => !p)}
-        onToggleAgent={() => setAgentOpen((p) => !p)}
-      />
+    <CrmProvider>
+      <div className="h-screen flex flex-col bg-background overflow-hidden">
+        <Topbar onToggleSidebar={() => setSidebarOpen((p) => !p)} />
 
-      {/* Body */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Sidebar */}
-        <AppSidebar
-          activePage={activePage}
-          onNavigate={setActivePage}
-          open={sidebarOpen}
-          onClose={() => setSidebarOpen(false)}
-        />
+        <div className="flex-1 flex overflow-hidden">
+          <AppSidebar
+            activePage={activePage}
+            onNavigate={setActivePage}
+            open={sidebarOpen}
+            onClose={() => setSidebarOpen(false)}
+          />
 
-        {/* Main */}
-        <main className="flex-1 overflow-y-auto p-5 md:p-7">
-          <ActiveComponent />
-        </main>
+          <main className="flex-1 overflow-y-auto p-5 md:p-7">
+            <ActiveComponent />
+          </main>
+        </div>
 
-        {/* Agent Panel */}
-        <AgentPanel
-          open={agentOpen}
-          onClose={() => setAgentOpen(false)}
-        />
+        {/* Floating agent chat */}
+        <AgentPanel />
       </div>
-    </div>
+    </CrmProvider>
   );
 };
 

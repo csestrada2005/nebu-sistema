@@ -8,20 +8,16 @@ const corsHeaders = {
 
 const SYSTEM_PROMPT = `Eres el Agente NEBU, el asistente de operaciones de Nebu Studio, una agencia creativa y digital.
 
-## Contexto del negocio
-Nebu Studio ofrece servicios de branding, e-commerce, landing pages, social media, web + SEO e identidad visual. Opera con un equipo pequeño (Olivia y Diego como responsables principales).
+## Tu rol
+Eres un asistente operativo que puede CONSULTAR y MODIFICAR datos del CRM. Tienes acceso a herramientas para ejecutar acciones reales sobre proyectos y leads.
 
-## Proyectos activos
-- NB-001 Raw Paw: E-commerce + Branding · $25,000 MXN · Paso 7/12 (Revisión) · Entrega: 15 Mar 2026 · Responsable: Olivia · Stack: Shopify · Figma · IG Ads ⚠ En revisión, pendiente aprobación del cliente.
-- NB-002 Papachoa: Landing + Social Media · $22,500 MXN · Paso 5/12 (Research) · Entrega: 28 Feb 2026 · Responsable: Olivia · Stack: WordPress · Meta Ads · Canva
-- NB-003 Bazar Centenario: Identidad + Web vitrina · $12,500 MXN · Paso 3/12 (Contrato) · Entrega: 20 Mar 2026 · Responsable: Diego · Stack: Figma · Webflow · Stripe
-
-## Pipeline de ventas (leads activos)
-- L-001 Café Ritual: Branding completo · $18,000 · Prospecto (Olivia)
-- L-002 Estudio Luma: Web + SEO · $15,000 · Prospecto (Diego)
-- L-003 Tacos Don Pepe: Social Media · $8,000 · Contacto (Olivia)
-- L-004 Yoga Flow MX: Landing page · $9,500 · Propuesta (Diego)
-- L-005 Raw Paw: E-commerce + Branding · $25,000 · Cerrado (Olivia)
+## Reglas de respuesta
+- Responde SIEMPRE en español.
+- Sé directo y conciso.
+- Usa "—" para listas y "⚠" para alertas.
+- Cuando el usuario pida una acción (cambiar estado, agregar lead, avanzar funnel, etc.), usa la herramienta correspondiente.
+- Después de ejecutar una acción, confirma qué hiciste.
+- Mantén un tono profesional pero cercano.
 
 ## Servicios y rangos de precio
 - Branding completo: $15,000 — $25,000 MXN
@@ -32,16 +28,95 @@ Nebu Studio ofrece servicios de branding, e-commerce, landing pages, social medi
 - Identidad + Web vitrina: $10,000 — $18,000 MXN
 
 ## Funnel de 12 pasos
-Briefing → Propuesta → Contrato → Anticipo → Research → Diseño V1 → Revisión → Diseño V2 → Desarrollo → QA → Entrega → Cierre
+1.Briefing 2.Propuesta 3.Contrato 4.Anticipo 5.Research 6.Diseño V1 7.Revisión 8.Diseño V2 9.Desarrollo 10.QA 11.Entrega 12.Cierre`;
 
-## Reglas de respuesta
-- Responde SIEMPRE en español.
-- Sé directo y conciso. No repitas información innecesaria.
-- Usa "—" para listas y "⚠" para alertas o elementos que requieren atención.
-- Si te preguntan por un proyecto, da estado, paso actual, precio y si hay algo pendiente.
-- Si te piden recomendaciones, prioriza por urgencia y riesgo.
-- Si te piden cotizaciones, usa los rangos de precios del catálogo.
-- Mantén un tono profesional pero cercano, como un compañero de equipo confiable.`;
+const tools = [
+  {
+    type: "function",
+    function: {
+      name: "update_project_status",
+      description: "Cambiar el estado de un proyecto existente. Estados posibles: activo, revisión, completado, pausado.",
+      parameters: {
+        type: "object",
+        properties: {
+          project_id: { type: "string", description: "ID del proyecto (ej: NB-001)" },
+          status: { type: "string", enum: ["activo", "revisión", "completado", "pausado"], description: "Nuevo estado" },
+        },
+        required: ["project_id", "status"],
+        additionalProperties: false,
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "advance_funnel",
+      description: "Avanzar un proyecto al siguiente paso del funnel de 12 pasos.",
+      parameters: {
+        type: "object",
+        properties: {
+          project_id: { type: "string", description: "ID del proyecto (ej: NB-001)" },
+        },
+        required: ["project_id"],
+        additionalProperties: false,
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "add_lead",
+      description: "Agregar un nuevo lead al pipeline de ventas.",
+      parameters: {
+        type: "object",
+        properties: {
+          nombre: { type: "string", description: "Nombre del negocio/cliente" },
+          servicio: { type: "string", description: "Servicio que solicita" },
+          precio: { type: "number", description: "Precio estimado en MXN" },
+          owner: { type: "string", description: "Responsable (ej: Olivia, Diego)" },
+          etapa: { type: "string", enum: ["prospecto", "contacto", "propuesta", "cerrado"], description: "Etapa del pipeline" },
+        },
+        required: ["nombre", "servicio", "precio", "owner", "etapa"],
+        additionalProperties: false,
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "move_lead",
+      description: "Mover un lead a otra etapa del pipeline.",
+      parameters: {
+        type: "object",
+        properties: {
+          lead_id: { type: "string", description: "ID del lead (ej: L-001)" },
+          etapa: { type: "string", enum: ["prospecto", "contacto", "propuesta", "cerrado"], description: "Nueva etapa" },
+        },
+        required: ["lead_id", "etapa"],
+        additionalProperties: false,
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "add_project",
+      description: "Crear un nuevo proyecto en el CRM.",
+      parameters: {
+        type: "object",
+        properties: {
+          cliente: { type: "string", description: "Nombre del cliente" },
+          servicio: { type: "string", description: "Servicio contratado" },
+          precio: { type: "number", description: "Precio en MXN" },
+          responsable: { type: "string", description: "Responsable del proyecto" },
+          entregaEst: { type: "string", description: "Fecha estimada de entrega" },
+        },
+        required: ["cliente", "servicio", "precio", "responsable", "entregaEst"],
+        additionalProperties: false,
+      },
+    },
+  },
+];
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -49,7 +124,7 @@ serve(async (req) => {
   }
 
   try {
-    const { messages } = await req.json();
+    const { messages, crmContext } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
     if (!LOVABLE_API_KEY) {
@@ -58,6 +133,9 @@ serve(async (req) => {
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+
+    // Build system message with live CRM data
+    const systemContent = `${SYSTEM_PROMPT}\n\n## Estado actual del CRM\n${crmContext || "Sin datos disponibles."}`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -68,9 +146,10 @@ serve(async (req) => {
       body: JSON.stringify({
         model: "google/gemini-3-flash-preview",
         messages: [
-          { role: "system", content: SYSTEM_PROMPT },
+          { role: "system", content: systemContent },
           ...messages,
         ],
+        tools,
         stream: true,
       }),
     });
@@ -78,7 +157,7 @@ serve(async (req) => {
     if (!response.ok) {
       if (response.status === 429) {
         return new Response(
-          JSON.stringify({ error: "Límite de solicitudes excedido. Intenta de nuevo en unos momentos." }),
+          JSON.stringify({ error: "Límite de solicitudes excedido. Intenta en unos momentos." }),
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
