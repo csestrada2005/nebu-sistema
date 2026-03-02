@@ -35,6 +35,6 @@ interface StatsCardProps {
                                                                                                                                                                                                           )}
                                                                                                                                                                                                               </div>
                                                                                                                                                                                                                 );
-                                                                                                                                                                                                                };
+};
 
-}
+export default StatsCard;

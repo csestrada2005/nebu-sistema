@@ -1,3 +1,4 @@
+/* NEBU CRM – Global Design Tokens */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
@@ -26,6 +27,16 @@
     --input: 0 0% 17%;
     --ring: 0 74% 57%;
     --radius: 0.5rem;
+
+    /* Sidebar */
+    --sidebar-background: 0 0% 5%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 0 74% 57%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 10%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 17%;
+    --sidebar-ring: 0 74% 57%;
 
     /* NEBU palette */
     --nebu-bg: #0a0a0a;
