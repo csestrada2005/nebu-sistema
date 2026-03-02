@@ -1,6 +1,6 @@
-import { Home, Briefcase, GitBranch, Wrench, DollarSign, Linkedin } from "lucide-react";
+import { Home, Briefcase, GitBranch, Wrench, DollarSign, Linkedin, Bot } from "lucide-react";
 
-export type Page = "dashboard" | "proyectos" | "pipeline" | "linkedin" | "herramientas" | "finanzas";
+export type Page = "dashboard" | "proyectos" | "pipeline" | "linkedin" | "herramientas" | "finanzas" | "novy";
 
 interface AppSidebarProps {
   activePage: Page;
@@ -9,13 +9,14 @@ interface AppSidebarProps {
   onClose: () => void;
 }
 
-const navItems: { id: Page; label: string; icon: React.ElementType }[] = [
+const navItems: { id: Page; label: string; icon: React.ElementType; badge?: number }[] = [
   { id: "dashboard", label: "Dashboard", icon: Home },
   { id: "proyectos", label: "Proyectos", icon: Briefcase },
   { id: "pipeline", label: "Pipeline", icon: GitBranch },
   { id: "linkedin", label: "LinkedIn", icon: Linkedin },
   { id: "herramientas", label: "Herramientas", icon: Wrench },
   { id: "finanzas", label: "Finanzas", icon: DollarSign },
+  { id: "novy", label: "NOVY", icon: Bot, badge: 7 },
 ];
 
 const AppSidebar = ({ activePage, onNavigate, open, onClose }: AppSidebarProps) => {
@@ -88,6 +89,19 @@ const AppSidebar = ({ activePage, onNavigate, open, onClose }: AppSidebarProps) 
                 <span className={active ? "font-semibold" : "font-normal"}>
                   {item.label}
                 </span>
+                {item.badge && (
+                  <span
+                    className="ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded-full"
+                    style={{
+                      backgroundColor: "#E53E3E",
+                      color: "#FFFFFF",
+                      minWidth: "18px",
+                      textAlign: "center",
+                    }}
+                  >
+                    {item.badge}
+                  </span>
+                )}
               </button>
             );
           })}
