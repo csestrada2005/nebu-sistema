@@ -14,6 +14,7 @@ const pageLabels: Record<Page, string> = {
   herramientas: "Herramientas",
   finanzas: "Finanzas",
   linkedin: "LinkedIn",
+  novy: "NOVY",
 };
 
 const Topbar = ({ onToggleSidebar, activePage, projectName }: TopbarProps) => {
