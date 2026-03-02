@@ -4,84 +4,83 @@ import AppSidebar from "@/components/AppSidebar";
 import type { Page } from "@/components/AppSidebar";
 import DashboardPage from "@/pages/DashboardPage";
 import ProyectosPage from "@/pages/ProyectosPage";
+import HerramientasPage from "@/pages/HerramientasPage";
 
 // Placeholder pages for modules not yet built
 const PlaceholderPage = ({ name }: { name: string }) => (
   <div className="flex items-center justify-center h-full animate-fade-in">
-      <div
-            className="rounded-lg p-12 text-center"
-                  style={{
-                          backgroundColor: "var(--nebu-card)",
-                                  border: "1px solid var(--nebu-border)",
-                                        }}
-                                            >
-                                                  <h2
-                                                          className="text-xl font-bold tracking-tight mb-2"
-                                                                  style={{ color: "var(--nebu-text)" }}
-                                                                        >
-                                                                                {name}
-                                                                                      </h2>
-                                                                                            <p className="text-sm" style={{ color: "var(--nebu-text-secondary)" }}>
-                                                                                                    Modulo en construccion
-                                                                                                          </p>
-                                                                                                              </div>
-                                                                                                                </div>
-                                                                                                                );
+    <div
+      className="rounded-lg p-12 text-center"
+      style={{
+        backgroundColor: "var(--nebu-card)",
+        border: "1px solid var(--nebu-border)",
+      }}
+    >
+      <h2
+        className="text-xl font-bold tracking-tight mb-2"
+        style={{ color: "var(--nebu-text)" }}
+      >
+        {name}
+      </h2>
+      <p className="text-sm" style={{ color: "var(--nebu-text-secondary)" }}>
+        Modulo en construccion
+      </p>
+    </div>
+  </div>
+);
 
-                                                                                                                const PipelinePage = () => <PlaceholderPage name="Pipeline" />;
-                                                                                                                const HerramientasPage = () => <PlaceholderPage name="Herramientas" />;
-                                                                                                                const FinanzasPage = () => <PlaceholderPage name="Finanzas" />;
+const PipelinePage = () => <PlaceholderPage name="Pipeline" />;
+const FinanzasPage = () => <PlaceholderPage name="Finanzas" />;
 
-                                                                                                                const pages: Record<Page, React.ComponentType> = {
-                                                                                                                  dashboard: DashboardPage,
-                                                                                                                    proyectos: ProyectosPage,
-                                                                                                                      pipeline: PipelinePage,
-                                                                                                                        herramientas: HerramientasPage,
-                                                                                                                          finanzas: FinanzasPage,
-                                                                                                                          };
+const pages: Record<Page, React.ComponentType> = {
+  dashboard: DashboardPage,
+  proyectos: ProyectosPage,
+  pipeline: PipelinePage,
+  herramientas: HerramientasPage,
+  finanzas: FinanzasPage,
+};
 
-                                                                                                                          const Index = () => {
-                                                                                                                            const [activePage, setActivePage] = useState<Page>("dashboard");
-                                                                                                                              const [sidebarOpen, setSidebarOpen] = useState(false);
+const Index = () => {
+  const [activePage, setActivePage] = useState<Page>("dashboard");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const ActiveComponent = pages[activePage];
 
-                                                                                                                                const ActiveComponent = pages[activePage];
+  return (
+    <div
+      className="h-screen flex overflow-hidden"
+      style={{ backgroundColor: "var(--nebu-bg)" }}
+    >
+      {/* Fixed Sidebar */}
+      <AppSidebar
+        activePage={activePage}
+        onNavigate={(page) => {
+          setActivePage(page);
+          setSidebarOpen(false);
+        }}
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
 
-                                                                                                                                  return (
-                                                                                                                                      <div
-                                                                                                                                            className="h-screen flex overflow-hidden"
-                                                                                                                                                  style={{ backgroundColor: "var(--nebu-bg)" }}
-                                                                                                                                                      >
-                                                                                                                                                            {/* Fixed Sidebar */}
-                                                                                                                                                                  <AppSidebar
-                                                                                                                                                                          activePage={activePage}
-                                                                                                                                                                                  onNavigate={(page) => {
-                                                                                                                                                                                            setActivePage(page);
-                                                                                                                                                                                                      setSidebarOpen(false);
-                                                                                                                                                                                                              }}
-                                                                                                                                                                                                                      open={sidebarOpen}
-                                                                                                                                                                                                                              onClose={() => setSidebarOpen(false)}
-                                                                                                                                                                                                                                    />
+      {/* Main content area */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Header */}
+        <Topbar
+          onToggleSidebar={() => setSidebarOpen((p) => !p)}
+          activePage={activePage}
+        />
 
-                                                                                                                                                                                                                                          {/* Main content area */}
-                                                                                                                                                                                                                                                <div className="flex-1 flex flex-col overflow-hidden">
-                                                                                                                                                                                                                                                        {/* Header */}
-                                                                                                                                                                                                                                                                <Topbar
-                                                                                                                                                                                                                                                                          onToggleSidebar={() => setSidebarOpen((p) => !p)}
-                                                                                                                                                                                                                                                                                    activePage={activePage}
-                                                                                                                                                                                                                                                                                            />
+        {/* Page content */}
+        <main
+          className="flex-1 overflow-y-auto p-6 md:p-8"
+          style={{ backgroundColor: "var(--nebu-bg)" }}
+        >
+          <div key={activePage} className="animate-fade-in">
+            <ActiveComponent />
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+};
 
-                                                                                                                                                                                                                                                                                                    {/* Page content */}
-                                                                                                                                                                                                                                                                                                            <main
-                                                                                                                                                                                                                                                                                                                      className="flex-1 overflow-y-auto p-6 md:p-8"
-                                                                                                                                                                                                                                                                                                                                style={{ backgroundColor: "var(--nebu-bg)" }}
-                                                                                                                                                                                                                                                                                                                                        >
-                                                                                                                                                                                                                                                                                                                                                  <div key={activePage} className="animate-fade-in">
-                                                                                                                                                                                                                                                                                                                                                              <ActiveComponent />
-                                                                                                                                                                                                                                                                                                                                                                        </div>
-                                                                                                                                                                                                                                                                                                                                                                                </main>
-                                                                                                                                                                                                                                                                                                                                                                                      </div>
-                                                                                                                                                                                                                                                                                                                                                                                          </div>
-                                                                                                                                                                                                                                                                                                                                                                                            );
-                                                                                                                                                                                                                                                                                                                                                                                            };
-
-                                                                                                                                                                                                                                                                                                                                                                                            export default Index;
+export default Index;
