@@ -4,15 +4,15 @@ import StatsCard from "@/components/StatsCard";
 const ALERTS = [
   {
     type: "warning" as const,
-    text: "PAPACHOA \u2014 Sin anticipo pagado",
+    text: "PAPACHOA — Sin anticipo pagado",
   },
   {
     type: "warning" as const,
-    text: "BAZAR CENTENARIO \u2014 Entrega estimada 23/02/2026 vencida",
+    text: "BAZAR CENTENARIO — Entrega estimada 23/02/2026 vencida",
   },
   {
     type: "success" as const,
-    text: "RAWPAW \u2014 Entregado y liquidado",
+    text: "RAWPAW — Entregado y liquidado",
   },
 ];
 
@@ -33,20 +33,16 @@ const NEXT_STEPS = [
 
 const DashboardPage = () => {
   return (
-    <div className="space-y-8 animate-fade-in">
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+    <div className="space-y-8">
+      {/* Stats row */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatsCard label="Proyectos Activos" value="3" />
         <StatsCard
           label="Por cobrar (MXN)"
           value="$27,500"
           sub="Saldos pendientes"
         />
-        <StatsCard
-          label="Entregados este mes"
-          value="1"
-          sub="RAWPAW"
-        />
+        <StatsCard label="Entregados este mes" value="1" sub="RAWPAW" />
         <StatsCard
           label="Canal de ventas"
           value="LinkedIn"
@@ -54,59 +50,64 @@ const DashboardPage = () => {
         />
       </div>
 
-      {/* ── Alertas R\u00e1pidas ── */}
-      <div className="space-y-3">
-        <h2 className="text-xs text-[#E53E3E] font-bold uppercase tracking-widest">
-          Alertas R\u00e1pidas
+      {/* Alertas Rápidas */}
+      <section>
+        <h2
+          className="text-sm font-bold tracking-wider mb-3"
+          style={{ color: "var(--nebu-accent)" }}
+        >
+          ALERTAS RÁPIDAS
         </h2>
-        {ALERTS.map((a, i) => (
-          <div
-            key={i}
-            className={`flex items-start gap-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-4 transition-all hover:scale-[1.01] hover:shadow-[0_0_15px_rgba(229,62,62,0.08)] ${
-              a.type === "warning"
-                ? "border-l-4 border-l-[#ef4444]"
-                : "border-l-4 border-l-[#22c55e]"
-            }`}
-          >
-            {a.type === "warning" ? (
-              <AlertTriangle className="w-4 h-4 text-[#ef4444] mt-0.5 flex-shrink-0" />
-            ) : (
-              <CheckCircle className="w-4 h-4 text-[#22c55e] mt-0.5 flex-shrink-0" />
-            )}
-            <p
-              className={`text-sm ${
-                a.type === "warning" ? "text-[#fca5a5]" : "text-[#86efac]"
-              }`}
+        <div className="space-y-2">
+          {ALERTS.map((a, i) => (
+            <div
+              key={i}
+              className="flex items-center gap-3 px-4 py-3 rounded-md text-sm"
+              style={{
+                backgroundColor: "var(--nebu-card)",
+                borderLeft: `4px solid ${
+                  a.type === "success" ? "#48BB78" : "var(--nebu-accent)"
+                }`,
+                color: "var(--nebu-text)",
+              }}
             >
-              {a.text}
-            </p>
-          </div>
-        ))}
-      </div>
+              {a.type === "success" ? (
+                <CheckCircle size={18} className="text-green-400 shrink-0" />
+              ) : (
+                <AlertTriangle size={18} className="text-red-400 shrink-0" />
+              )}
+              <span>{a.text}</span>
+            </div>
+          ))}
+        </div>
+      </section>
 
-      {/* ── Pr\u00f3ximos Pasos Sugeridos ── */}
-      <div className="space-y-3">
-        <h2 className="text-xs text-[#E53E3E] font-bold uppercase tracking-widest">
-          Pr\u00f3ximos Pasos Sugeridos
+      {/* Próximos Pasos Sugeridos */}
+      <section>
+        <h2
+          className="text-sm font-bold tracking-wider mb-3"
+          style={{ color: "var(--nebu-accent)" }}
+        >
+          PRÓXIMOS PASOS SUGERIDOS
         </h2>
-        {NEXT_STEPS.map((step, i) => (
-          <div
-            key={i}
-            className="flex items-center gap-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-4 transition-all hover:scale-[1.01] hover:shadow-[0_0_15px_rgba(229,62,62,0.08)]"
-          >
-            <ArrowRight className="w-4 h-4 text-[#E53E3E] flex-shrink-0" />
-            <div>
-              <span className="text-sm font-bold text-white">
-                {step.project}
-              </span>
-              <span className="text-sm text-[#888888]">
-                {" "}
-                \u2014 {step.action}
+        <div className="space-y-2">
+          {NEXT_STEPS.map((step, i) => (
+            <div
+              key={i}
+              className="flex items-center gap-3 px-4 py-3 rounded-md text-sm"
+              style={{
+                backgroundColor: "var(--nebu-card)",
+                color: "var(--nebu-text)",
+              }}
+            >
+              <ArrowRight size={18} style={{ color: "var(--nebu-accent)" }} className="shrink-0" />
+              <span>
+                <strong>{step.project}</strong> — {step.action}
               </span>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 };
