@@ -9,6 +9,7 @@ import PipelinePage from "@/pages/PipelinePage";
 import FinanzasPage from "@/pages/FinanzasPage";
 import LinkedInPage from "@/pages/LinkedInPage";
 import NovyPage from "@/pages/NovyPage";
+import EmailPage from "@/pages/EmailPage";
 
 const Index = () => {
   const [activePage, setActivePage] = useState<Page>("dashboard");
@@ -28,6 +29,7 @@ const Index = () => {
     proyectos: ProyectosPage,
     pipeline: PipelineWrapper,
     herramientas: HerramientasPage,
+        email: EmailPage,
     finanzas: FinanzasPage,
     linkedin: LinkedInPage,
     novy: NovyPage,
