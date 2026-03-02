@@ -5,8 +5,9 @@ import type { Page } from "@/components/AppSidebar";
 import DashboardPage from "@/pages/DashboardPage";
 import ProyectosPage from "@/pages/ProyectosPage";
 import HerramientasPage from "@/pages/HerramientasPage";
+import PipelinePage from "@/pages/PipelinePage";
 
-// Placeholder pages for modules not yet built
+// Placeholder page for Finanzas (not yet built)
 const PlaceholderPage = ({ name }: { name: string }) => (
   <div className="flex items-center justify-center h-full animate-fade-in">
     <div
@@ -29,20 +30,29 @@ const PlaceholderPage = ({ name }: { name: string }) => (
   </div>
 );
 
-const PipelinePage = () => <PlaceholderPage name="Pipeline" />;
 const FinanzasPage = () => <PlaceholderPage name="Finanzas" />;
-
-const pages: Record<Page, React.ComponentType> = {
-  dashboard: DashboardPage,
-  proyectos: ProyectosPage,
-  pipeline: PipelinePage,
-  herramientas: HerramientasPage,
-  finanzas: FinanzasPage,
-};
 
 const Index = () => {
   const [activePage, setActivePage] = useState<Page>("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Wrapper for PipelinePage to handle "Ver proyecto" navigation
+  const PipelineWrapper = () => (
+    <PipelinePage
+      onViewProject={(projectId) => {
+        setActivePage("proyectos");
+      }}
+    />
+  );
+
+  const pages: Record<Page, React.ComponentType> = {
+    dashboard: DashboardPage,
+    proyectos: ProyectosPage,
+    pipeline: PipelineWrapper,
+    herramientas: HerramientasPage,
+    finanzas: FinanzasPage,
+  };
+
   const ActiveComponent = pages[activePage];
 
   return (
