@@ -8,6 +8,7 @@ import HerramientasPage from "@/pages/HerramientasPage";
 import PipelinePage from "@/pages/PipelinePage";
 import FinanzasPage from "@/pages/FinanzasPage";
 import LinkedInPage from "@/pages/LinkedInPage";
+import NovyPage from "@/pages/NovyPage";
 
 const Index = () => {
   const [activePage, setActivePage] = useState<Page>("dashboard");
@@ -29,6 +30,7 @@ const Index = () => {
     herramientas: HerramientasPage,
     finanzas: FinanzasPage,
     linkedin: LinkedInPage,
+    novy: NovyPage,
   };
 
   const ActiveComponent = pages[activePage];
