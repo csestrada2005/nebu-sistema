@@ -1,6 +1,6 @@
 import { Home, Briefcase, GitBranch, Wrench, DollarSign, Linkedin } from "lucide-react";
 
-export type Page = "dashboard" | "proyectos" | "pipeline" | "herramientas" | "finanzas" | "linkedin";
+export type Page = "dashboard" | "proyectos" | "pipeline" | "linkedin" | "herramientas" | "finanzas";
 
 interface AppSidebarProps {
   activePage: Page;
@@ -13,9 +13,9 @@ const navItems: { id: Page; label: string; icon: React.ElementType }[] = [
   { id: "dashboard", label: "Dashboard", icon: Home },
   { id: "proyectos", label: "Proyectos", icon: Briefcase },
   { id: "pipeline", label: "Pipeline", icon: GitBranch },
+  { id: "linkedin", label: "LinkedIn", icon: Linkedin },
   { id: "herramientas", label: "Herramientas", icon: Wrench },
   { id: "finanzas", label: "Finanzas", icon: DollarSign },
-  { id: "linkedin", label: "LinkedIn", icon: Linkedin },
 ];
 
 const AppSidebar = ({ activePage, onNavigate, open, onClose }: AppSidebarProps) => {
@@ -110,7 +110,7 @@ const AppSidebar = ({ activePage, onNavigate, open, onClose }: AppSidebarProps) 
             className="text-[10px]"
             style={{ color: "#555555" }}
           >
-            v1.0 \u2014 Uso interno
+            v1.0 — Uso interno
           </p>
         </div>
       </aside>
