@@ -1,6 +1,6 @@
-import { Home, Briefcase, GitBranch, Wrench, DollarSign } from "lucide-react";
+import { Home, Briefcase, GitBranch, Wrench, DollarSign, Linkedin } from "lucide-react";
 
-export type Page = "dashboard" | "proyectos" | "pipeline" | "herramientas" | "finanzas";
+export type Page = "dashboard" | "proyectos" | "pipeline" | "herramientas" | "finanzas" | "linkedin";
 
 interface AppSidebarProps {
   activePage: Page;
@@ -15,6 +15,7 @@ const navItems: { id: Page; label: string; icon: React.ElementType }[] = [
   { id: "pipeline", label: "Pipeline", icon: GitBranch },
   { id: "herramientas", label: "Herramientas", icon: Wrench },
   { id: "finanzas", label: "Finanzas", icon: DollarSign },
+  { id: "linkedin", label: "LinkedIn", icon: Linkedin },
 ];
 
 const AppSidebar = ({ activePage, onNavigate, open, onClose }: AppSidebarProps) => {

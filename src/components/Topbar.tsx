@@ -13,6 +13,7 @@ const pageLabels: Record<Page, string> = {
   pipeline: "Pipeline",
   herramientas: "Herramientas",
   finanzas: "Finanzas",
+  linkedin: "LinkedIn",
 };
 
 const Topbar = ({ onToggleSidebar, activePage, projectName }: TopbarProps) => {
