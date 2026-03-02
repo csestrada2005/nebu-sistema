@@ -6,31 +6,7 @@ import DashboardPage from "@/pages/DashboardPage";
 import ProyectosPage from "@/pages/ProyectosPage";
 import HerramientasPage from "@/pages/HerramientasPage";
 import PipelinePage from "@/pages/PipelinePage";
-
-// Placeholder page for Finanzas (not yet built)
-const PlaceholderPage = ({ name }: { name: string }) => (
-  <div className="flex items-center justify-center h-full animate-fade-in">
-    <div
-      className="rounded-lg p-12 text-center"
-      style={{
-        backgroundColor: "var(--nebu-card)",
-        border: "1px solid var(--nebu-border)",
-      }}
-    >
-      <h2
-        className="text-xl font-bold tracking-tight mb-2"
-        style={{ color: "var(--nebu-text)" }}
-      >
-        {name}
-      </h2>
-      <p className="text-sm" style={{ color: "var(--nebu-text-secondary)" }}>
-        Modulo en construccion
-      </p>
-    </div>
-  </div>
-);
-
-const FinanzasPage = () => <PlaceholderPage name="Finanzas" />;
+import FinanzasPage from "@/pages/FinanzasPage";
 
 const Index = () => {
   const [activePage, setActivePage] = useState<Page>("dashboard");
@@ -39,7 +15,7 @@ const Index = () => {
   // Wrapper for PipelinePage to handle "Ver proyecto" navigation
   const PipelineWrapper = () => (
     <PipelinePage
-      onViewProject={(projectId) => {
+      onViewProject={() => {
         setActivePage("proyectos");
       }}
     />
