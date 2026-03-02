@@ -6,100 +6,86 @@
 
 @layer base {
   :root {
-      --background: 0 0% 4%;
-          --foreground: 0 0% 100%;
+    --background: 0 0% 4%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 0 74% 57%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 7%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 7%;
+    --muted-foreground: 0 0% 53%;
+    --accent: 0 0% 7%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 17%;
+    --input: 0 0% 17%;
+    --ring: 0 74% 57%;
+    --radius: 0.5rem;
 
-              --card: 0 0% 10%;
-                  --card-foreground: 0 0% 100%;
+    /* NEBU palette */
+    --nebu-bg: #0a0a0a;
+    --nebu-surface: #111111;
+    --nebu-card: #1a1a1a;
+    --nebu-accent: #E53E3E;
+    --nebu-text: #FFFFFF;
+    --nebu-text-secondary: #888888;
+    --nebu-border: #2a2a2a;
+    --nebu-active-bg: #1f1f1f;
+  }
 
-                      --popover: 0 0% 10%;
-                          --popover-foreground: 0 0% 100%;
+  * {
+    border-color: hsl(var(--border));
+  }
 
-                              --primary: 0 74% 57%;
-                                  --primary-foreground: 0 0% 100%;
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
 
-                                      --secondary: 0 0% 7%;
-                                          --secondary-foreground: 0 0% 100%;
+/* Custom Scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #333333 transparent;
+}
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #333333;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555555;
+}
 
-                                              --muted: 0 0% 7%;
-                                                  --muted-foreground: 0 0% 53%;
+/* Fade transition 150ms */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fadeIn 150ms ease-out;
+}
 
-                                                      --accent: 0 0% 7%;
-                                                          --accent-foreground: 0 0% 100%;
+/* Focus ring */
+*:focus-visible {
+  outline: 2px solid var(--nebu-accent);
+  outline-offset: 2px;
+}
 
-                                                              --destructive: 0 74% 57%;
-                                                                  --destructive-foreground: 0 0% 100%;
-
-                                                                      --border: 0 0% 16%;
-                                                                          --input: 0 0% 16%;
-                                                                              --ring: 0 74% 57%;
-                                                                                  --radius: 0.5rem;
-
-                                                                                      /* NEBU custom tokens */
-                                                                                          --nebu-bg: #0a0a0a;
-                                                                                              --nebu-surface: #111111;
-                                                                                                  --nebu-card: #1a1a1a;
-                                                                                                      --nebu-accent: #E53E3E;
-                                                                                                          --nebu-text: #FFFFFF;
-                                                                                                              --nebu-text-secondary: #888888;
-                                                                                                                  --nebu-border: #2a2a2a;
-                                                                                                                      --nebu-active-bg: #1f1f1f;
-
-                                                                                                                          --sidebar-background: 0 0% 7%;
-                                                                                                                              --sidebar-foreground: 0 0% 100%;
-                                                                                                                                  --sidebar-primary: 0 74% 57%;
-                                                                                                                                      --sidebar-primary-foreground: 0 0% 100%;
-                                                                                                                                          --sidebar-accent: 0 74% 57%;
-                                                                                                                                              --sidebar-accent-foreground: 0 0% 100%;
-                                                                                                                                                  --sidebar-border: 0 0% 16%;
-                                                                                                                                                      --sidebar-ring: 0 74% 57%;
-                                                                                                                                                        }
-                                                                                                                                                        }
-
-                                                                                                                                                        @layer base {
-                                                                                                                                                          * {
-                                                                                                                                                              @apply border-border;
-                                                                                                                                                                }
-                                                                                                                                                                  body {
-                                                                                                                                                                      @apply bg-background text-foreground antialiased;
-                                                                                                                                                                          font-family: 'Inter', sans-serif;
-                                                                                                                                                                            }
-                                                                                                                                                                            }
-
-                                                                                                                                                                            /* Scrollbar */
-                                                                                                                                                                            ::-webkit-scrollbar {
-                                                                                                                                                                              width: 4px;
-                                                                                                                                                                                height: 4px;
-                                                                                                                                                                                }
-                                                                                                                                                                                ::-webkit-scrollbar-track {
-                                                                                                                                                                                  background: var(--nebu-bg);
-                                                                                                                                                                                  }
-                                                                                                                                                                                  ::-webkit-scrollbar-thumb {
-                                                                                                                                                                                    background: var(--nebu-border);
-                                                                                                                                                                                      border-radius: 2px;
-                                                                                                                                                                                      }
-                                                                                                                                                                                      ::-webkit-scrollbar-thumb:hover {
-                                                                                                                                                                                        background: var(--nebu-text-secondary);
-                                                                                                                                                                                        }
-
-                                                                                                                                                                                        /* Fade transition */
-                                                                                                                                                                                        @keyframes fadeIn {
-                                                                                                                                                                                          from {
-                                                                                                                                                                                              opacity: 0;
-                                                                                                                                                                                                  transform: translateY(6px);
-                                                                                                                                                                                                    }
-                                                                                                                                                                                                      to {
-                                                                                                                                                                                                          opacity: 1;
-                                                                                                                                                                                                              transform: translateY(0);
-                                                                                                                                                                                                                }
-                                                                                                                                                                                                                }
-
-                                                                                                                                                                                                                .animate-fade-in {
-                                                                                                                                                                                                                  animation: fadeIn 0.3s ease-out both;
-                                                                                                                                                                                                                  }
-
-                                                                                                                                                                                                                  /* Focus */
-                                                                                                                                                                                                                  *:focus-visible {
-                                                                                                                                                                                                                    outline: 2px solid var(--nebu-accent);
-                                                                                                                                                                                                                      outline-offset: 2px;
-                                                                                                                                                                                                                      }
+/* Selection */
+::selection {
+  background: rgba(229, 62, 62, 0.3);
+  color: white;
+}
