@@ -1,37 +1,59 @@
 import { Menu } from "lucide-react";
+import type { Page } from "./AppSidebar";
 
 interface TopbarProps {
   onToggleSidebar: () => void;
-}
+    activePage: Page;
+    }
 
-const Topbar = ({ onToggleSidebar }: TopbarProps) => {
-  return (
-    <header className="h-14 border-b border-nebu-border bg-nebu-carbon flex items-center justify-between px-4 z-50">
-      <div className="flex items-center gap-3">
-        <button
-          onClick={onToggleSidebar}
-          className="lg:hidden p-1.5 rounded hover:bg-nebu-surface transition-colors"
-          aria-label="Toggle sidebar"
-        >
-          <Menu size={18} />
-        </button>
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-primary" />
-          <span className="font-display text-lg tracking-wider">NEBU STUDIO</span>
-          <span className="font-mono text-xs text-nebu-text-dim">/ CRM &amp; AGENTE</span>
-        </div>
-      </div>
+    const pageLabels: Record<Page, string> = {
+      dashboard: "Dashboard",
+        proyectos: "Proyectos",
+          pipeline: "Pipeline",
+            herramientas: "Herramientas",
+              finanzas: "Finanzas",
+              };
 
-      <div className="hidden md:flex items-center gap-5 text-xs font-mono">
-        <div className="flex items-center gap-1.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-nebu-green animate-pulse-dot" />
-          <span className="text-nebu-green">AGENTE ACTIVO</span>
-        </div>
-        <span className="text-nebu-text-dim">PROYECTOS: <span className="text-foreground">3</span></span>
-        <span className="text-nebu-text-dim">PENDIENTES: <span className="text-nebu-amber">$12,500 MXN</span></span>
-      </div>
-    </header>
-  );
-};
+              const Topbar = ({ onToggleSidebar, activePage }: TopbarProps) => {
+                const today = new Date().toLocaleDateString("es-MX", {
+                    weekday: "long",
+                        year: "numeric",
+                            month: "long",
+                                day: "numeric",
+                                  });
 
-export default Topbar;
+                                    return (
+                                        <header
+                                              className="h-14 flex items-center justify-between px-6 z-50 shrink-0"
+                                                    style={{
+                                                            backgroundColor: "var(--nebu-surface)",
+                                                                    borderBottom: "1px solid var(--nebu-border)",
+                                                                          }}
+                                                                              >
+                                                                                    <div className="flex items-center gap-4">
+                                                                                            <button
+                                                                                                      onClick={onToggleSidebar}
+                                                                                                                className="lg:hidden p-1.5 rounded hover:opacity-80 transition-opacity"
+                                                                                                                          aria-label="Toggle sidebar"
+                                                                                                                                  >
+                                                                                                                                            <Menu size={20} style={{ color: "var(--nebu-text)" }} />
+                                                                                                                                                    </button>
+                                                                                                                                                            <h1
+                                                                                                                                                                      className="text-lg font-bold tracking-tight"
+                                                                                                                                                                                style={{ color: "var(--nebu-text)" }}
+                                                                                                                                                                                        >
+                                                                                                                                                                                                  {pageLabels[activePage]}
+                                                                                                                                                                                                          </h1>
+                                                                                                                                                                                                                </div>
+
+                                                                                                                                                                                                                      <span
+                                                                                                                                                                                                                              className="text-sm hidden sm:block capitalize"
+                                                                                                                                                                                                                                      style={{ color: "var(--nebu-text-secondary)" }}
+                                                                                                                                                                                                                                            >
+                                                                                                                                                                                                                                                    {today}
+                                                                                                                                                                                                                                                          </span>
+                                                                                                                                                                                                                                                              </header>
+                                                                                                                                                                                                                                                                );
+                                                                                                                                                                                                                                                                };
+
+                                                                                                                                                                                                                                                                export default Topbar;

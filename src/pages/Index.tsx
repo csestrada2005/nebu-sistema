@@ -1,51 +1,92 @@
 import { useState } from "react";
 import Topbar from "@/components/Topbar";
 import AppSidebar from "@/components/AppSidebar";
-import AgentPanel from "@/components/AgentPanel";
+import type { Page } from "@/components/AppSidebar";
 import DashboardPage from "@/pages/DashboardPage";
-import ProyectosPage from "@/pages/ProyectosPage";
-import PipelinePage from "@/pages/PipelinePage";
-import CotizacionesPage from "@/pages/CotizacionesPage";
-import { CrmProvider } from "@/contexts/CrmContext";
 
-type Page = "dashboard" | "proyectos" | "pipeline" | "cotizaciones";
+// Placeholder pages for modules not yet built
+const PlaceholderPage = ({ name }: { name: string }) => (
+  <div
+      className="flex items-center justify-center h-full animate-fade-in"
+        >
+            <div
+                  className="rounded-lg p-12 text-center"
+                        style={{
+                                backgroundColor: "var(--nebu-card)",
+                                        border: "1px solid var(--nebu-border)",
+                                              }}
+                                                  >
+                                                        <h2
+                                                                className="text-xl font-bold tracking-tight mb-2"
+                                                                        style={{ color: "var(--nebu-text)" }}
+                                                                              >
+                                                                                      {name}
+                                                                                            </h2>
+                                                                                                  <p
+                                                                                                          className="text-sm"
+                                                                                                                  style={{ color: "var(--nebu-text-secondary)" }}
+                                                                                                                        >
+                                                                                                                                Modulo en construccion
+                                                                                                                                      </p>
+                                                                                                                                          </div>
+                                                                                                                                            </div>
+                                                                                                                                            );
 
-const pages: Record<Page, React.ComponentType> = {
-  dashboard: DashboardPage,
-  proyectos: ProyectosPage,
-  pipeline: PipelinePage,
-  cotizaciones: CotizacionesPage,
-};
+                                                                                                                                            const ProyectosPage = () => <PlaceholderPage name="Proyectos" />;
+                                                                                                                                            const PipelinePage = () => <PlaceholderPage name="Pipeline" />;
+                                                                                                                                            const HerramientasPage = () => <PlaceholderPage name="Herramientas" />;
+                                                                                                                                            const FinanzasPage = () => <PlaceholderPage name="Finanzas" />;
 
-const Index = () => {
-  const [activePage, setActivePage] = useState<Page>("dashboard");
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+                                                                                                                                            const pages: Record<Page, React.ComponentType> = {
+                                                                                                                                              dashboard: DashboardPage,
+                                                                                                                                                proyectos: ProyectosPage,
+                                                                                                                                                  pipeline: PipelinePage,
+                                                                                                                                                    herramientas: HerramientasPage,
+                                                                                                                                                      finanzas: FinanzasPage,
+                                                                                                                                                      };
 
-  const ActiveComponent = pages[activePage];
+                                                                                                                                                      const Index = () => {
+                                                                                                                                                        const [activePage, setActivePage] = useState<Page>("dashboard");
+                                                                                                                                                          const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  return (
-    <CrmProvider>
-      <div className="h-screen flex flex-col bg-background overflow-hidden">
-        <Topbar onToggleSidebar={() => setSidebarOpen((p) => !p)} />
+                                                                                                                                                            const ActiveComponent = pages[activePage];
 
-        <div className="flex-1 flex overflow-hidden">
-          <AppSidebar
-            activePage={activePage}
-            onNavigate={setActivePage}
-            open={sidebarOpen}
-            onClose={() => setSidebarOpen(false)}
-          />
+                                                                                                                                                              return (
+                                                                                                                                                                  <div
+                                                                                                                                                                        className="h-screen flex overflow-hidden"
+                                                                                                                                                                              style={{ backgroundColor: "var(--nebu-bg)" }}
+                                                                                                                                                                                  >
+                                                                                                                                                                                        {/* Fixed Sidebar */}
+                                                                                                                                                                                              <AppSidebar
+                                                                                                                                                                                                      activePage={activePage}
+                                                                                                                                                                                                              onNavigate={(page) => {
+                                                                                                                                                                                                                        setActivePage(page);
+                                                                                                                                                                                                                                  setSidebarOpen(false);
+                                                                                                                                                                                                                                          }}
+                                                                                                                                                                                                                                                  open={sidebarOpen}
+                                                                                                                                                                                                                                                          onClose={() => setSidebarOpen(false)}
+                                                                                                                                                                                                                                                                />
 
-          <main className="flex-1 overflow-y-auto p-5 md:p-7">
-            <ActiveComponent />
-          </main>
-        </div>
+                                                                                                                                                                                                                                                                      {/* Main content area */}
+                                                                                                                                                                                                                                                                            <div className="flex-1 flex flex-col overflow-hidden">
+                                                                                                                                                                                                                                                                                    {/* Header */}
+                                                                                                                                                                                                                                                                                            <Topbar
+                                                                                                                                                                                                                                                                                                      onToggleSidebar={() => setSidebarOpen((p) => !p)}
+                                                                                                                                                                                                                                                                                                                activePage={activePage}
+                                                                                                                                                                                                                                                                                                                        />
 
-        {/* Floating agent chat */}
-        <AgentPanel />
-      </div>
-    </CrmProvider>
-  );
-};
+                                                                                                                                                                                                                                                                                                                                {/* Page content */}
+                                                                                                                                                                                                                                                                                                                                        <main
+                                                                                                                                                                                                                                                                                                                                                  className="flex-1 overflow-y-auto p-6 md:p-8"
+                                                                                                                                                                                                                                                                                                                                                            style={{ backgroundColor: "var(--nebu-bg)" }}
+                                                                                                                                                                                                                                                                                                                                                                    >
+                                                                                                                                                                                                                                                                                                                                                                              <div key={activePage} className="animate-fade-in">
+                                                                                                                                                                                                                                                                                                                                                                                          <ActiveComponent />
+                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                            </main>
+                                                                                                                                                                                                                                                                                                                                                                                                                  </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                      </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                        );
+                                                                                                                                                                                                                                                                                                                                                                                                                        };
 
-export default Index;
+                                                                                                                                                                                                                                                                                                                                                                                                                        export default Index;

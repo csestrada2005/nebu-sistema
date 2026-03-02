@@ -1,32 +1,47 @@
 import StatsCard from "@/components/StatsCard";
-import ProjectTable from "@/components/ProjectTable";
-import { useCrm } from "@/contexts/CrmContext";
 
 const DashboardPage = () => {
-  const { state } = useCrm();
-  const totalIngresos = state.projects.reduce((s, p) => s + p.precio, 0);
-  const pendiente = state.projects.find((p) => p.estado === "activo" && p.pasoFunnel <= 3);
-  const pendienteCobro = pendiente ? pendiente.precio : 0;
-
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-5xl tracking-tight">DASHBOARD</h1>
-        <p className="font-mono text-xs text-nebu-text-dim mt-1">
-          NEBU STUDIO · FEB 2026 · OPERACIONES ACTIVAS
-        </p>
-      </div>
+      <div className="space-y-8 animate-fade-in">
+            {/* Stats Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                          <StatsCard
+                                    label="Proyectos Activos"
+                                              value="3"
+                                                      />
+                                                              <StatsCard
+                                                                        label="Por cobrar (MXN)"
+                                                                                  value="$12,500"
+                                                                                            sub="Saldos pendientes"
+                                                                                                    />
+                                                                                                            <StatsCard
+                                                                                                                      label="Entregados este mes"
+                                                                                                                                value="1"
+                                                                                                                                        />
+                                                                                                                                                <StatsCard
+                                                                                                                                                          label="Canal de ventas"
+                                                                                                                                                                    value="LinkedIn"
+                                                                                                                                                                              sub="Canal principal activo"
+                                                                                                                                                                                      />
+                                                                                                                                                                                            </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
-        <StatsCard label="Ingresos Activos" value={`$${(totalIngresos / 1000).toFixed(0)}K`} sub={`${state.projects.length} proyectos activos`} />
-        <StatsCard label="Pendiente Cobro" value={`$${(pendienteCobro / 1000).toFixed(1)}K`} sub={pendiente?.cliente || "—"} color="amber" />
-        <StatsCard label="En Pipeline" value={String(state.leads.length)} sub="leads activos" />
-        <StatsCard label="Comisión Olivia" value="$6K" sub="↑ 10% sobre ventas" color="green" />
-      </div>
+                                                                                                                                                                                                  {/* Placeholder table */}
+                                                                                                                                                                                                        <div
+                                                                                                                                                                                                                className="rounded-lg p-8 text-center"
+                                                                                                                                                                                                                        style={{
+                                                                                                                                                                                                                                  backgroundColor: "var(--nebu-card)",
+                                                                                                                                                                                                                                            border: "1px solid var(--nebu-border)",
+                                                                                                                                                                                                                                                    }}
+                                                                                                                                                                                                                                                          >
+                                                                                                                                                                                                                                                                  <p
+                                                                                                                                                                                                                                                                            className="text-sm"
+                                                                                                                                                                                                                                                                                      style={{ color: "var(--nebu-text-secondary)" }}
+                                                                                                                                                                                                                                                                                              >
+                                                                                                                                                                                                                                                                                                        Selecciona un modulo para ver detalles
+                                                                                                                                                                                                                                                                                                                </p>
+                                                                                                                                                                                                                                                                                                                      </div>
+                                                                                                                                                                                                                                                                                                                          </div>
+                                                                                                                                                                                                                                                                                                                            );
+                                                                                                                                                                                                                                                                                                                            };
 
-      <ProjectTable />
-    </div>
-  );
-};
-
-export default DashboardPage;
+                                                                                                                                                                                                                                                                                                                            export default DashboardPage;
