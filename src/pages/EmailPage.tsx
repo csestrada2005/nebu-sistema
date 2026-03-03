@@ -52,7 +52,6 @@ const templates: Template[] = [
   { id: 5, name: "Reactivación 3 Meses", category: "Nurturing", categoryColor: "#A855F7", subject: "¿Cómo va {{negocio}} estos meses?", preview: "Han pasado unos meses desde que trabajamos juntos...", variables: ["negocio"], usedIn: 0, openRate: "-" },
 ];
 
-// ─── HELPERS ──────────────────────────────────
 const statusBadge = (s: Sequence["status"]) => {
   const m: Record<string, { bg: string; text: string; label: string }> = {
     activa: { bg: "#22C55E22", text: "#22C55E", label: "Activa" },
@@ -79,7 +78,6 @@ const HighlightVars = ({ text }: { text: string }) => {
   return <>{parts.map((p, i) => p.startsWith("{{") ? <span key={i} style={{ backgroundColor: "#2a1a1a", color: "#E53E3E", padding: "1px 4px", borderRadius: 4, fontFamily: "monospace", fontSize: 12 }}>{p}</span> : <span key={i}>{p}</span>)}</>;
 };
 
-// ─── TIMELINE ──────────────────────────────────
 const MiniTimeline = ({ steps, status }: { steps: SeqStep[]; status: Sequence["status"] }) => (
   <div style={{ display: "flex", alignItems: "center", gap: 0, marginTop: 8 }}>
     {steps.map((s, i) => (
@@ -101,7 +99,6 @@ const MiniTimeline = ({ steps, status }: { steps: SeqStep[]; status: Sequence["s
   </div>
 );
 
-// ─── SECUENCIAS TAB ──────────────────────────────────
 const SecuenciasTab = () => {
   const [expanded, setExpanded] = useState<number | null>(null);
   return (
@@ -142,7 +139,6 @@ const SecuenciasTab = () => {
   );
 };
 
-// ─── CONTACTOS TAB ──────────────────────────────────
 const ContactosTab = () => {
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   return (
@@ -219,7 +215,6 @@ const ContactosTab = () => {
   );
 };
 
-// ─── PLANTILLAS TAB ──────────────────────────────────
 const PlantillasTab = () => {
   const [filter, setFilter] = useState("Todas");
   const [viewTemplate, setViewTemplate] = useState<Template | null>(null);
@@ -228,9 +223,7 @@ const PlantillasTab = () => {
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-        <div>
-          <h2 style={{ color: "#fff", fontWeight: 700, fontSize: 16, margin: 0 }}>BIBLIOTECA DE PLANTILLAS</h2>
-        </div>
+        <h2 style={{ color: "#fff", fontWeight: 700, fontSize: 16, margin: 0 }}>BIBLIOTECA DE PLANTILLAS</h2>
         <button style={{ padding: "6px 18px", borderRadius: 8, border: "none", backgroundColor: "#E53E3E", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>Nueva Plantilla +</button>
       </div>
       <div style={{ display: "flex", gap: 6, marginBottom: 16 }}>
@@ -291,13 +284,11 @@ const PlantillasTab = () => {
   );
 };
 
-// ─── MAIN COMPONENT ──────────────────────────────────
 const EmailPage = () => {
   const [activeTab, setActiveTab] = useState<Tab>("secuencias");
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
@@ -313,15 +304,11 @@ const EmailPage = () => {
             Secuencias de cold email · Follow-ups · Nurturing
           </p>
         </div>
-        <button
-          className="px-4 py-2 rounded-md text-sm font-semibold whitespace-nowrap"
-          style={{ backgroundColor: "var(--nebu-accent)", color: "#fff" }}
-        >
+        <button className="px-4 py-2 rounded-md text-sm font-semibold whitespace-nowrap" style={{ backgroundColor: "var(--nebu-accent)", color: "#fff" }}>
           Nueva Secuencia +
         </button>
       </div>
 
-      {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div style={{ backgroundColor: "#1a1a1a", borderRadius: 12, padding: 18, border: "1px solid #262626" }}>
           <div style={{ color: "#666", fontSize: 11, textTransform: "uppercase", marginBottom: 6 }}>Emails enviados este mes</div>
@@ -351,17 +338,9 @@ const EmailPage = () => {
         </div>
       </div>
 
-      {/* Tabs */}
       <div className="flex gap-0" style={{ borderBottom: "1px solid var(--nebu-border)" }}>
         {tabList.map((t) => (
-          <button
-            key={t.id}
-            onClick={() => setActiveTab(t.id)}
-            className="px-5 py-2.5 text-sm font-medium transition-colors relative"
-            style={{
-              color: activeTab === t.id ? "var(--nebu-text)" : "var(--nebu-text-secondary)",
-            }}
-          >
+          <button key={t.id} onClick={() => setActiveTab(t.id)} className="px-5 py-2.5 text-sm font-medium transition-colors relative" style={{ color: activeTab === t.id ? "var(--nebu-text)" : "var(--nebu-text-secondary)" }}>
             {t.label}
             {activeTab === t.id && (
               <span className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ backgroundColor: "var(--nebu-accent)" }} />
@@ -370,7 +349,6 @@ const EmailPage = () => {
         ))}
       </div>
 
-      {/* Tab content */}
       {activeTab === "secuencias" && <SecuenciasTab />}
       {activeTab === "contactos" && <ContactosTab />}
       {activeTab === "plantillas" && <PlantillasTab />}
