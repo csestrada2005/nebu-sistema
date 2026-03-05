@@ -12,6 +12,7 @@ const pageLabels: Record<Page, string> = {
   proyectos: "Proyectos",
   pipeline: "Pipeline",
   herramientas: "Herramientas",
+  "mis-webs": "Mis Webs",
   finanzas: "Finanzas",
   linkedin: "LinkedIn",
   novy: "NOVY",
