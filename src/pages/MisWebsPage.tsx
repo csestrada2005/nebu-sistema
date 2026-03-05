@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Globe, TrendingUp, Target, Zap, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const t = {
   es: {
     title: "Análisis de Webs",
-    langLabel: "EN",
     websActivas: "Webs Activas",
     avgSeo: "Avg. SEO Score",
     avgCro: "Avg. CRO Score",
@@ -25,7 +25,6 @@ const t = {
   },
   en: {
     title: "Web Analysis",
-    langLabel: "ES",
     websActivas: "Active Webs",
     avgSeo: "Avg. SEO Score",
     avgCro: "Avg. CRO Score",
@@ -127,13 +126,10 @@ const ProjectCard = ({ project, lang }: { project: ProjectData; lang: Lang }) =>
   const bc = badgeColor(project.worstBadge[lang]);
   const s = t[lang];
 
-  const handleAction = () => {
-    toast({ title: s.toastMsg, duration: 3000 });
-  };
+  const handleAction = () => { toast({ title: s.toastMsg, duration: 3000 }); };
 
   return (
     <div style={{ backgroundColor: "#1A1A1A", border: "1px solid #2A2A2A", borderRadius: 12, padding: 24 }}>
-      {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-2 mb-5">
         <div>
           <h3 style={{ color: "#FFFFFF", fontSize: 16, fontWeight: 700, margin: 0 }}>{project.name}</h3>
@@ -141,13 +137,9 @@ const ProjectCard = ({ project, lang }: { project: ProjectData; lang: Lang }) =>
         </div>
         <div className="flex flex-col items-end gap-1">
           <span style={{ color: "#888888", fontSize: 11 }}>{s.lastUpdate}</span>
-          <span style={{ backgroundColor: bc.bg, color: bc.text, fontSize: 10, fontWeight: 600, padding: "2px 8px", borderRadius: 999 }}>
-            {project.worstBadge[lang]}
-          </span>
+          <span style={{ backgroundColor: bc.bg, color: bc.text, fontSize: 10, fontWeight: 600, padding: "2px 8px", borderRadius: 999 }}>{project.worstBadge[lang]}</span>
         </div>
       </div>
-
-      {/* Scores */}
       <div className="flex gap-3 mb-4">
         {(["SEO", "CRO", "Performance"] as const).map((cat) => {
           const val = cat === "SEO" ? project.seo : cat === "CRO" ? project.cro : project.performance;
@@ -159,8 +151,6 @@ const ProjectCard = ({ project, lang }: { project: ProjectData; lang: Lang }) =>
           );
         })}
       </div>
-
-      {/* Issues */}
       <div className="mb-4">
         <div style={{ color: "#888888", fontSize: 12, textTransform: "uppercase", marginBottom: 8, letterSpacing: 0.5 }}>{s.pendientes}</div>
         <div className="space-y-2">
@@ -170,20 +160,14 @@ const ProjectCard = ({ project, lang }: { project: ProjectData; lang: Lang }) =>
                 <span style={{ width: 6, height: 6, borderRadius: "50%", backgroundColor: severityDot(issue.severity), flexShrink: 0 }} />
                 <span style={{ color: "#FFFFFF", fontSize: 13 }} className="truncate">{issue.text[lang]}</span>
               </div>
-              <span style={{ fontSize: 10, color: "#888888", backgroundColor: "#111111", border: "1px solid #2A2A2A", padding: "1px 6px", borderRadius: 999, flexShrink: 0 }}>
-                {issue.category}
-              </span>
+              <span style={{ fontSize: 10, color: "#888888", backgroundColor: "#111111", border: "1px solid #2A2A2A", padding: "1px 6px", borderRadius: 999, flexShrink: 0 }}>{issue.category}</span>
             </div>
           ))}
         </div>
         {project.issues.length > 4 && !showAll && (
-          <button onClick={() => setShowAll(true)} style={{ color: "#E63946", fontSize: 12, marginTop: 6, background: "none", border: "none", cursor: "pointer" }}>
-            {s.verMas}
-          </button>
+          <button onClick={() => setShowAll(true)} style={{ color: "#E63946", fontSize: 12, marginTop: 6, background: "none", border: "none", cursor: "pointer" }}>{s.verMas}</button>
         )}
       </div>
-
-      {/* Metrics */}
       <div className="mb-4">
         <div style={{ color: "#888888", fontSize: 12, textTransform: "uppercase", marginBottom: 8, letterSpacing: 0.5 }}>{s.metricas}</div>
         <div className="flex flex-wrap gap-2">
@@ -200,34 +184,18 @@ const ProjectCard = ({ project, lang }: { project: ProjectData; lang: Lang }) =>
           ))}
         </div>
       </div>
-
-      {/* Actions */}
       <div className="flex gap-2">
-        <button
-          onClick={handleAction}
-          className="flex-1 transition-colors"
-          style={{ height: 36, fontSize: 13, borderRadius: 8, border: "1px solid #E63946", color: "#E63946", backgroundColor: "transparent", cursor: "pointer" }}
-          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgba(230,57,70,0.1)")}
-          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
-        >
-          {s.verInforme}
-        </button>
-        <button
-          onClick={handleAction}
-          className="flex-1 transition-colors"
-          style={{ height: 36, fontSize: 13, borderRadius: 8, border: "none", color: "#FFFFFF", backgroundColor: "#E63946", cursor: "pointer" }}
-          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#C5303B")}
-          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#E63946")}
-        >
-          {s.generarReporte}
-        </button>
+        <button onClick={handleAction} className="flex-1 transition-colors" style={{ height: 36, fontSize: 13, borderRadius: 8, border: "1px solid #E63946", color: "#E63946", backgroundColor: "transparent", cursor: "pointer" }}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgba(230,57,70,0.1)")} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}>{s.verInforme}</button>
+        <button onClick={handleAction} className="flex-1 transition-colors" style={{ height: 36, fontSize: 13, borderRadius: 8, border: "none", color: "#FFFFFF", backgroundColor: "#E63946", cursor: "pointer" }}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#C5303B")} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#E63946")}>{s.generarReporte}</button>
       </div>
     </div>
   );
 };
 
 const MisWebsPage = () => {
-  const [lang, setLang] = useState<Lang>("es");
+  const { lang } = useLanguage();
   const s = t[lang];
 
   const overviewStats = [
@@ -240,33 +208,9 @@ const MisWebsPage = () => {
 
   return (
     <div>
-      {/* Title + Lang Toggle */}
       <div className="flex items-center justify-between mb-6">
         <h1 style={{ color: "#FFFFFF", fontSize: 24, fontWeight: 700, margin: 0 }}>{s.title}</h1>
-        <button
-          onClick={() => setLang(lang === "es" ? "en" : "es")}
-          style={{
-            backgroundColor: "#111111",
-            border: "1px solid #333333",
-            borderRadius: 8,
-            padding: "6px 14px",
-            color: "#FFFFFF",
-            fontSize: 13,
-            fontWeight: 600,
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.borderColor = "#E63946")}
-          onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#333333")}
-        >
-          <Globe size={14} style={{ color: "#888888" }} />
-          {s.langLabel}
-        </button>
       </div>
-
-      {/* Overview Bar */}
       <div style={{ backgroundColor: "#1A1A1A", border: "1px solid #2A2A2A", borderRadius: 12, padding: 24, marginBottom: 24 }}>
         <div className="flex flex-wrap gap-6">
           {overviewStats.map((st) => (
@@ -280,12 +224,8 @@ const MisWebsPage = () => {
           ))}
         </div>
       </div>
-
-      {/* Project Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {projects.map((p) => (
-          <ProjectCard key={p.name} project={p} lang={lang} />
-        ))}
+        {projects.map((p) => <ProjectCard key={p.name} project={p} lang={lang} />)}
       </div>
     </div>
   );
