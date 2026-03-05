@@ -1,6 +1,6 @@
-import { Home, Briefcase, GitBranch, Wrench, DollarSign, Linkedin, Mail, Bot } from "lucide-react";
+import { Home, Briefcase, GitBranch, Wrench, DollarSign, Linkedin, Mail, Bot, BarChart2 } from "lucide-react";
 
-export type Page = "dashboard" | "proyectos" | "pipeline" | "linkedin" | "herramientas" | "email" | "finanzas" | "novy";
+export type Page = "dashboard" | "proyectos" | "pipeline" | "linkedin" | "herramientas" | "mis-webs" | "email" | "finanzas" | "novy";
 
 interface AppSidebarProps {
   activePage: Page;
