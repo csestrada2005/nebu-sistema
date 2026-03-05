@@ -11,18 +11,14 @@ import LinkedInPage from "@/pages/LinkedInPage";
 import NovyPage from "@/pages/NovyPage";
 import EmailPage from "@/pages/EmailPage";
 import MisWebsPage from "@/pages/MisWebsPage";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 
 const Index = () => {
   const [activePage, setActivePage] = useState<Page>("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Wrapper for PipelinePage to handle "Ver proyecto" navigation
   const PipelineWrapper = () => (
-    <PipelinePage
-      onViewProject={() => {
-        setActivePage("proyectos");
-      }}
-    />
+    <PipelinePage onViewProject={() => setActivePage("proyectos")} />
   );
 
   const pages: Record<Page, React.ComponentType> = {
@@ -40,40 +36,24 @@ const Index = () => {
   const ActiveComponent = pages[activePage];
 
   return (
-    <div
-      className="h-screen flex overflow-hidden"
-      style={{ backgroundColor: "var(--nebu-bg)" }}
-    >
-      {/* Fixed Sidebar */}
-      <AppSidebar
-        activePage={activePage}
-        onNavigate={(page) => {
-          setActivePage(page);
-          setSidebarOpen(false);
-        }}
-        open={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-      />
-
-      {/* Main content area */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
-        <Topbar
-          onToggleSidebar={() => setSidebarOpen((p) => !p)}
+    <LanguageProvider>
+      <div className="h-screen flex overflow-hidden" style={{ backgroundColor: "var(--nebu-bg)" }}>
+        <AppSidebar
           activePage={activePage}
+          onNavigate={(page) => { setActivePage(page); setSidebarOpen(false); }}
+          open={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
         />
-
-        {/* Page content */}
-        <main
-          className="flex-1 overflow-y-auto p-6 md:p-8"
-          style={{ backgroundColor: "var(--nebu-bg)" }}
-        >
-          <div key={activePage} className="animate-fade-in">
-            <ActiveComponent />
-          </div>
-        </main>
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <Topbar onToggleSidebar={() => setSidebarOpen((p) => !p)} activePage={activePage} />
+          <main className="flex-1 overflow-y-auto p-6 md:p-8" style={{ backgroundColor: "var(--nebu-bg)" }}>
+            <div key={activePage} className="animate-fade-in">
+              <ActiveComponent />
+            </div>
+          </main>
+        </div>
       </div>
-    </div>
+    </LanguageProvider>
   );
 };
 
