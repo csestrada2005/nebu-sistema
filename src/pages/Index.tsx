@@ -58,6 +58,7 @@ const Index = () => {
     calendario: CalendarioPage,
     configuracion: ConfiguracionPage,
     tareas: TareasPage,
+    leads: LeadsPage,
   };
 
   const ActiveComponent = pages[activePage];
