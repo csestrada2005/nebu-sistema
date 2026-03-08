@@ -140,7 +140,7 @@ const NovyPage = () => {
     en: {
       analyzing: "● Analyzing...", agentSub: "AI Agent · Nebu Studio · v1.0",
       pendingAuth: "tasks pending authorization",
-      tabs: [{ id: "tareas" as TabId, label: "Pending Tasks" }, { id: "historial" as TabId, label: "History" }, { id: "config" as TabId, label: "Settings" }],
+      tabs: [{ id: "tareas" as TabId, label: "Pending Tasks" }, { id: "chat" as TabId, label: "Chat" }, { id: "historial" as TabId, label: "History" }, { id: "config" as TabId, label: "Settings" }],
       detected: "NOVY detected these actions. Review, modify, or approve each one.",
       hidePreview: "Hide preview", showPreview: "View preview",
       modify: "Modify", approve: "Approve", cancel: "Cancel",
