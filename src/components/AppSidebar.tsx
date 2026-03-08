@@ -1,7 +1,7 @@
-import { Home, Briefcase, GitBranch, Wrench, DollarSign, Linkedin, Mail, Bot, BarChart2, BarChart3, Users, FileText, Receipt, MessageSquare, Target, Phone, TrendingUp, Activity, CalendarDays, Settings, CheckSquare, UserPlus, UserCheck, Zap } from "lucide-react";
+import { Home, Briefcase, GitBranch, Wrench, DollarSign, Linkedin, Mail, Bot, BarChart2, BarChart3, Users, FileText, Receipt, MessageSquare, Target, Phone, TrendingUp, Activity, CalendarDays, Settings, CheckSquare, UserPlus, UserCheck, Zap, Webhook, Shield, Plug } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-export type Page = "dashboard" | "proyectos" | "pipeline" | "linkedin" | "herramientas" | "mis-webs" | "contactos" | "contratos" | "cotizaciones" | "email" | "finanzas" | "novy" | "plantillas" | "vendedores" | "oportunidades" | "llamadas" | "reportes" | "forecast" | "rendimiento" | "calendario" | "configuracion" | "tareas" | "leads" | "portal-cliente" | "automatizaciones";
+export type Page = "dashboard" | "proyectos" | "pipeline" | "linkedin" | "herramientas" | "mis-webs" | "contactos" | "contratos" | "cotizaciones" | "email" | "finanzas" | "novy" | "plantillas" | "vendedores" | "oportunidades" | "llamadas" | "reportes" | "forecast" | "rendimiento" | "calendario" | "configuracion" | "tareas" | "leads" | "portal-cliente" | "automatizaciones" | "webhooks" | "roles" | "integraciones";
 
 interface AppSidebarProps {
   activePage: Page;
