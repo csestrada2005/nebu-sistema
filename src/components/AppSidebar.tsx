@@ -18,6 +18,7 @@ const navItems: { id: Page; label: Record<"es" | "en", string>; icon: React.Elem
   { id: "herramientas", label: { es: "Herramientas", en: "Tools" }, icon: Wrench },
   { id: "mis-webs", label: { es: "Mis Webs", en: "My Webs" }, icon: BarChart2 },
   { id: "contactos", label: { es: "Contactos", en: "Contacts" }, icon: Users },
+  { id: "contratos", label: { es: "Contratos", en: "Contracts" }, icon: FileText },
   { id: "email", label: { es: "Email", en: "Email" }, icon: Mail },
   { id: "finanzas", label: { es: "Finanzas", en: "Finances" }, icon: DollarSign },
   { id: "novy", label: { es: "NOVY", en: "NOVY" }, icon: Bot, badge: 7 },

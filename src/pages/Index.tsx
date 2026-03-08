@@ -30,6 +30,7 @@ const Index = () => {
     herramientas: HerramientasPage,
     "mis-webs": MisWebsPage,
     contactos: ContactosPage,
+    contratos: ContratosPage,
     email: EmailPage,
     finanzas: FinanzasPage,
     linkedin: LinkedInPage,
