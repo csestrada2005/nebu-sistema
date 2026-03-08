@@ -32,6 +32,7 @@ const Index = () => {
     "mis-webs": MisWebsPage,
     contactos: ContactosPage,
     contratos: ContratosPage,
+    cotizaciones: CotizacionesPage,
     email: EmailPage,
     finanzas: FinanzasPage,
     linkedin: LinkedInPage,
