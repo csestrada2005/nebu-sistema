@@ -578,6 +578,7 @@ const NovyPage = () => {
                     {block.type === "pipeline" && <PipelineView lang={lang} />}
                     {block.type === "kpis" && <KPICards lang={lang} />}
                     {block.type === "alerts" && <AlertsPanel lang={lang} />}
+                    {block.type === "forecast" && <ForecastCard lang={lang} />}
                   </div>
                 ))}
 
