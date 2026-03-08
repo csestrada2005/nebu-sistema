@@ -14,6 +14,10 @@ import MisWebsPage from "@/pages/MisWebsPage";
 import ContactosPage from "@/pages/ContactosPage";
 import ContratosPage from "@/pages/ContratosPage";
 import CotizacionesPage from "@/pages/CotizacionesPage";
+import PlantillasPage from "@/pages/PlantillasPage";
+import VendedoresPage from "@/pages/VendedoresPage";
+import OportunidadesPage from "@/pages/OportunidadesPage";
+import LlamadasPage from "@/pages/LlamadasPage";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 
 const Index = () => {
