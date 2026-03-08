@@ -3,35 +3,45 @@ import { useLanguage } from "@/contexts/LanguageContext";
 
 const STEPS = {
   es: [
-    { num: 1, name: "Prospección" }, { num: 2, name: "Primer Contacto" }, { num: 3, name: "Cuestionario de Inicio" },
-    { num: 4, name: "Plan del Proyecto" }, { num: 5, name: "Cuestionario de Implementación" }, { num: 6, name: "PDF / Propuesta Final" },
-    { num: 7, name: "Contrato + 50% Anticipo" }, { num: 8, name: "Inicio + Lista Semanal" }, { num: 9, name: "Avances Semanales" },
-    { num: 10, name: "Ronda Final de Cambios" }, { num: 11, name: "Entrega Final + Cobro 50%" }, { num: 12, name: "Mantenimiento Mensual" },
+    { num: 1, name: "Prospección" }, { num: 2, name: "Nuevo Contacto" }, { num: 3, name: "Reunión Agendada" },
+    { num: 4, name: "Propuesta Enviada" }, { num: 5, name: "Negociación" }, { num: 6, name: "Cerrado Ganado" },
   ],
   en: [
-    { num: 1, name: "Prospecting" }, { num: 2, name: "First Contact" }, { num: 3, name: "Intake Questionnaire" },
-    { num: 4, name: "Project Plan" }, { num: 5, name: "Implementation Questionnaire" }, { num: 6, name: "PDF / Final Proposal" },
-    { num: 7, name: "Contract + 50% Deposit" }, { num: 8, name: "Kickoff + Weekly List" }, { num: 9, name: "Weekly Updates" },
-    { num: 10, name: "Final Round of Changes" }, { num: 11, name: "Final Delivery + 50% Collection" }, { num: 12, name: "Monthly Maintenance" },
+    { num: 1, name: "Prospecting" }, { num: 2, name: "New Contact" }, { num: 3, name: "Meeting Scheduled" },
+    { num: 4, name: "Proposal Sent" }, { num: 5, name: "Negotiation" }, { num: 6, name: "Closed Won" },
   ],
 };
 
-const PIPELINE_PROJECTS = [
-  { id: "P01", nombre: "RAWPAW", cliente: "Emma Rawson", tipo: "E-commerce", responsable: "Josep", paso: 11,
-    nota: { es: "Entregado, en revisión cliente. Saldo $0.", en: "Delivered, under client review. Balance $0." } },
-  { id: "P02", nombre: "PAPACHOA", cliente: "Cesar Padilla", tipo: "E-commerce", responsable: "Josep, Emilio", paso: 9,
-    nota: { es: "En proceso. Sin anticipo pagado. Responsable: Josep, Emilio.", en: "In progress. No advance paid. Owner: Josep, Emilio." } },
-  { id: "P03", nombre: "BAZAR CENTENARIO", cliente: "BAZAR CENTENARIO", tipo: "Sistema", responsable: "Josep", paso: 8,
-    nota: { es: "Anticipo pagado $12,500. Saldo pendiente $12,500.", en: "Advance paid $12,500. Pending balance $12,500." } },
+interface PipelineProject {
+  id: string;
+  nombre: string;
+  servicio: { es: string; en: string };
+  valor: number;
+  dias: number;
+  paso: number;
+  responsable: string;
+}
+
+const PIPELINE_PROJECTS: PipelineProject[] = [
+  { id: "P01", nombre: "Café Revolución", servicio: { es: "Sitio Web", en: "Website" }, valor: 18000, dias: 3, paso: 2, responsable: "Josep" },
+  { id: "P02", nombre: "Dr. Martínez Dental", servicio: { es: "Landing Page", en: "Landing Page" }, valor: 12000, dias: 1, paso: 2, responsable: "Emilio" },
+  { id: "P03", nombre: "Boutique Amara", servicio: { es: "E-commerce", en: "E-commerce" }, valor: 45000, dias: 8, paso: 3, responsable: "Josep" },
+  { id: "P04", nombre: "Gym PowerFit", servicio: { es: "Sitio + SEO", en: "Site + SEO" }, valor: 28000, dias: 12, paso: 3, responsable: "Emilio" },
+  { id: "P05", nombre: "Restaurante Umami", servicio: { es: "Rediseño Web", en: "Web Redesign" }, valor: 22000, dias: 15, paso: 4, responsable: "Josep" },
+  { id: "P06", nombre: "Estudio Legal Vega", servicio: { es: "Web + CRM", en: "Web + CRM" }, valor: 55000, dias: 5, paso: 5, responsable: "Josep" },
+  { id: "P07", nombre: "RAWPAW", servicio: { es: "Branding + Web", en: "Branding + Web" }, valor: 35000, dias: 0, paso: 6, responsable: "Josep" },
 ];
 
-const tipoBadge = (tipo: string) => {
-  const colors: Record<string, string> = {
-    "E-commerce": "bg-purple-900/40 text-purple-400 border-purple-700/40",
-    SaaS: "bg-blue-900/40 text-blue-400 border-blue-700/40",
-    Sistema: "bg-amber-900/40 text-amber-400 border-amber-700/40",
-  };
-  return colors[tipo] || "bg-gray-800 text-gray-400 border-gray-700";
+const urgencyBorder = (dias: number) => {
+  if (dias < 7) return "border-l-green-500";
+  if (dias <= 14) return "border-l-yellow-500";
+  return "border-l-red-500";
+};
+
+const urgencyBadgeBg = (dias: number) => {
+  if (dias < 7) return "bg-green-500/20 text-green-400";
+  if (dias <= 14) return "bg-yellow-500/20 text-yellow-400";
+  return "bg-red-500/20 text-red-400";
 };
 
 interface PipelinePageProps { onViewProject?: (projectId: string) => void; }
@@ -42,9 +52,11 @@ const PipelinePage: React.FC<PipelinePageProps> = ({ onViewProject }) => {
   const steps = STEPS[lang];
 
   const tt = {
-    es: { title: "PIPELINE DE VENTAS", sub: "Funnel de 12 pasos — Nebu Studio", viewProject: "Ver proyecto →", step: "Paso", of: "de", currentStep: "Paso actual" },
-    en: { title: "SALES PIPELINE", sub: "12-step funnel — Nebu Studio", viewProject: "View project →", step: "Step", of: "of", currentStep: "Current step" },
+    es: { title: "PIPELINE DE VENTAS", sub: "Funnel de ventas — Nebu Studio", viewProject: "Ver proyecto →", step: "Paso", of: "de", currentStep: "Paso actual", days: "días", day: "día", new: "Nuevo" },
+    en: { title: "SALES PIPELINE", sub: "Sales funnel — Nebu Studio", viewProject: "View project →", step: "Step", of: "of", currentStep: "Current step", days: "days", day: "day", new: "New" },
   }[lang];
+
+  const formatMXN = (v: number) => `$${v.toLocaleString("es-MX")} MXN`;
 
   return (
     <div className="space-y-6">
@@ -61,25 +73,43 @@ const PipelinePage: React.FC<PipelinePageProps> = ({ onViewProject }) => {
 
       {view === "kanban" ? (
         <div className="overflow-x-auto pb-4">
-          <div className="flex gap-3" style={{ minWidth: "2400px" }}>
+          <div className="flex gap-3" style={{ minWidth: "1200px" }}>
             {steps.map((step) => {
               const projects = PIPELINE_PROJECTS.filter((p) => p.paso === step.num);
               const hasProjects = projects.length > 0;
+              const totalValue = projects.reduce((s, p) => s + p.valor, 0);
               return (
-                <div key={step.num} className={`flex-1 min-w-[200px] rounded-xl ${hasProjects ? "opacity-100" : "opacity-50"}`} style={{ background: "#111111", borderTop: hasProjects ? "2px solid #E53E3E" : "2px solid #2a2a2a" }}>
-                  <div className="p-3 border-b border-[#2a2a2a]">
-                    <span className={`text-xs font-bold ${hasProjects ? "text-[#E53E3E]" : "text-[#555555]"}`}>{String(step.num).padStart(2, "0")}</span>
-                    <p className={`text-xs font-semibold mt-1 leading-tight ${hasProjects ? "text-[#E53E3E]" : "text-[#555555]"}`}>{step.name}</p>
+                <div key={step.num} className="flex-1 min-w-[200px] rounded-xl" style={{ background: "#111111", borderTop: hasProjects ? "2px solid #E53E3E" : "2px solid #2a2a2a" }}>
+                  <div className="p-3 border-b border-[#2a2a2a] flex items-center justify-between">
+                    <div>
+                      <span className={`text-xs font-bold ${hasProjects ? "text-[#E53E3E]" : "text-[#555555]"}`}>{String(step.num).padStart(2, "0")}</span>
+                      <p className={`text-xs font-semibold mt-1 leading-tight ${hasProjects ? "text-white" : "text-[#555555]"}`}>{step.name}</p>
+                    </div>
+                    {hasProjects && (
+                      <span className="text-[10px] bg-[#E53E3E]/20 text-[#E53E3E] px-2 py-0.5 rounded-full font-bold">{projects.length}</span>
+                    )}
                   </div>
+                  {hasProjects && (
+                    <div className="px-3 py-1.5 border-b border-[#2a2a2a]">
+                      <p className="text-[10px] text-[#666666]">{formatMXN(totalValue)}</p>
+                    </div>
+                  )}
                   <div className="p-2 space-y-2 overflow-y-auto max-h-[500px]">
                     {projects.map((proj) => (
-                      <div key={proj.id} className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-3 hover:shadow-[0_0_15px_rgba(229,62,62,0.1)] transition-all">
-                        <p className="text-sm font-bold text-white">{proj.nombre}</p>
-                        <p className="text-xs text-[#888888] mt-1">{proj.cliente}</p>
-                        <span className={`inline-block mt-2 px-2 py-0.5 text-[10px] font-medium rounded border ${tipoBadge(proj.tipo)}`}>{proj.tipo}</span>
+                      <div
+                        key={proj.id}
+                        className={`bg-[#1a1a1a] border border-[#2a2a2a] border-l-4 ${urgencyBorder(proj.dias)} rounded-lg p-3 hover:shadow-[0_0_15px_rgba(229,62,62,0.1)] transition-all cursor-pointer`}
+                        onClick={() => onViewProject?.(proj.id)}
+                      >
+                        <div className="flex items-start justify-between">
+                          <p className="text-sm font-bold text-white">{proj.nombre}</p>
+                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${urgencyBadgeBg(proj.dias)}`}>
+                            {proj.dias === 0 ? tt.new : `${proj.dias}d`}
+                          </span>
+                        </div>
+                        <p className="text-xs text-[#888888] mt-1.5">{proj.servicio[lang]}</p>
+                        <p className="text-sm font-semibold text-white mt-2">{formatMXN(proj.valor)}</p>
                         <p className="text-[10px] text-[#666666] mt-2">{proj.responsable}</p>
-                        <p className="text-[11px] text-[#888888] italic mt-2 leading-snug">{proj.nota[lang]}</p>
-                        <button onClick={() => onViewProject?.(proj.id)} className="mt-3 text-[11px] text-[#E53E3E] hover:text-red-300 font-medium transition-colors">{tt.viewProject}</button>
                       </div>
                     ))}
                   </div>
@@ -94,13 +124,18 @@ const PipelinePage: React.FC<PipelinePageProps> = ({ onViewProject }) => {
             const currentStep = steps.find((s) => s.num === proj.paso);
             const progress = ((proj.paso - 1) / (steps.length - 1)) * 100;
             return (
-              <div key={proj.id} className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-6">
+              <div key={proj.id} className={`bg-[#1a1a1a] border border-[#2a2a2a] border-l-4 ${urgencyBorder(proj.dias)} rounded-xl p-6`}>
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <h3 className="text-lg font-bold text-white">{proj.nombre}</h3>
-                    <span className={`px-2 py-0.5 text-[10px] font-medium rounded border ${tipoBadge(proj.tipo)}`}>{proj.tipo}</span>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${urgencyBadgeBg(proj.dias)}`}>
+                      {proj.dias === 0 ? tt.new : `${proj.dias} ${proj.dias === 1 ? tt.day : tt.days}`}
+                    </span>
                   </div>
-                  <span className="text-xs text-[#888888]">{tt.step} {proj.paso} {tt.of} 12</span>
+                  <div className="text-right">
+                    <p className="text-sm font-semibold text-white">{formatMXN(proj.valor)}</p>
+                    <span className="text-xs text-[#888888]">{tt.step} {proj.paso} {tt.of} {steps.length}</span>
+                  </div>
                 </div>
                 <div className="relative mb-3">
                   <div className="h-2 bg-[#222222] rounded-full overflow-hidden">
@@ -111,9 +146,9 @@ const PipelinePage: React.FC<PipelinePageProps> = ({ onViewProject }) => {
                       const isCompleted = step.num < proj.paso;
                       const isCurrent = step.num === proj.paso;
                       return (
-                        <div key={step.num} className="flex flex-col items-center" style={{ width: "calc(100% / 12)" }}>
+                        <div key={step.num} className="flex flex-col items-center" style={{ width: `calc(100% / ${steps.length})` }}>
                           <div className={`w-3 h-3 rounded-full border-2 transition-all ${isCurrent ? "bg-[#E53E3E] border-[#E53E3E] scale-125 shadow-[0_0_8px_rgba(229,62,62,0.5)]" : isCompleted ? "bg-[#22c55e] border-[#22c55e]" : "bg-[#333333] border-[#444444]"}`} />
-                          <span className={`text-[9px] mt-1 text-center leading-tight ${isCurrent ? "text-[#E53E3E] font-bold" : isCompleted ? "text-[#22c55e]" : "text-[#555555]"}`}>{String(step.num).padStart(2, "0")}</span>
+                          <span className={`text-[9px] mt-1 text-center leading-tight ${isCurrent ? "text-[#E53E3E] font-bold" : isCompleted ? "text-[#22c55e]" : "text-[#555555]"}`}>{step.name}</span>
                         </div>
                       );
                     })}
@@ -124,7 +159,7 @@ const PipelinePage: React.FC<PipelinePageProps> = ({ onViewProject }) => {
                     <p className="text-xs text-[#E53E3E] font-bold uppercase tracking-widest">{tt.currentStep}</p>
                     <p className="text-sm text-white mt-1 font-medium">{String(proj.paso).padStart(2, "0")} — {currentStep?.name}</p>
                   </div>
-                  <p className="text-xs text-[#888888] italic max-w-sm text-right">{proj.nota[lang]}</p>
+                  <p className="text-xs text-[#888888]">{proj.servicio[lang]} · {proj.responsable}</p>
                 </div>
               </div>
             );
