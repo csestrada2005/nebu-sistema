@@ -436,6 +436,9 @@ const NovyPage = () => {
   const [messages, setMessages] = useState<ChatMessage[]>(MOCK_MESSAGES);
   const [conversations, setConversations] = useState(CONVERSATIONS);
   const [isTyping, setIsTyping] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+
+  const pendingTasks = 7;
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -469,171 +472,192 @@ const NovyPage = () => {
   };
 
   return (
-    <div className="flex h-[calc(100vh-80px)] gap-0 -mx-2">
-      {/* ─── Sidebar: Conversations ─── */}
-      <div className="w-56 shrink-0 border-r border-border flex flex-col">
-        <div className="p-3 border-b border-border">
+    <div className="flex flex-col h-[calc(100vh-80px)] -mx-2">
+      {/* ─── Top Header Bar ─── */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0">
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/30 flex items-center justify-center">
+              <Bot size={20} className="text-primary" />
+            </div>
+            <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-green-500 border-2 border-background" />
+          </div>
+          <div>
+            <h1 className="text-sm font-bold text-foreground flex items-center gap-1.5">
+              NOVY <Sparkles size={12} className="text-primary" />
+            </h1>
+            <p className="text-[10px] text-muted-foreground flex items-center gap-1.5">
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-500" />
+              {lang === "es" ? "En línea" : "Online"} · {lang === "es" ? "Centro de Comando CRM" : "CRM Command Center"}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          {/* Pending tasks badge */}
+          <div className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-primary/10 border border-primary/20 text-primary">
+            <Clock size={12} />
+            <span className="font-medium">{pendingTasks}</span>
+            <span className="text-primary/70">{lang === "es" ? "pendientes" : "pending"}</span>
+          </div>
+
+          {/* New conversation */}
           <button
             onClick={handleNewConversation}
-            className="w-full flex items-center justify-center gap-2 text-xs font-medium px-3 py-2.5 rounded-lg border border-border bg-card text-foreground hover:bg-primary/5 hover:border-primary/30 transition-all"
+            className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border border-border bg-card text-foreground hover:bg-primary/5 hover:border-primary/30 transition-all"
           >
-            <Plus size={14} />
+            <Plus size={12} />
             {lang === "es" ? "Nueva conversación" : "New conversation"}
           </button>
-        </div>
-        <div className="flex-1 overflow-y-auto py-2" style={{ scrollbarWidth: "none" }}>
-          {conversations.map((c) => (
-            <button
-              key={c.id}
-              onClick={() => {
-                if (c.id === "today") setMessages(MOCK_MESSAGES);
-                setConversations(prev => prev.map(x => ({ ...x, active: x.id === c.id })));
-              }}
-              className={`w-full text-left px-3 py-2.5 text-xs transition-colors ${
-                c.active
-                  ? "bg-primary/10 text-foreground border-l-2 border-primary"
-                  : "text-muted-foreground hover:bg-card hover:text-foreground border-l-2 border-transparent"
-              }`}
-            >
-              <span className="block font-medium truncate">{c.title}</span>
-              <span className="text-[10px] text-muted-foreground">{c.date}</span>
-            </button>
-          ))}
-        </div>
-        {/* NOVY branding */}
-        <div className="p-3 border-t border-border">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
-              <Bot size={14} className="text-primary" />
-            </div>
-            <div>
-              <span className="text-xs font-bold text-foreground block">NOVY</span>
-              <span className="text-[10px] text-muted-foreground">v1.0 · {lang === "es" ? "En línea" : "Online"}</span>
-            </div>
-          </div>
+
+          {/* History toggle */}
+          <button
+            onClick={() => setShowHistory(!showHistory)}
+            className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border transition-all ${
+              showHistory
+                ? "border-primary/30 bg-primary/10 text-primary"
+                : "border-border bg-card text-muted-foreground hover:text-foreground hover:border-primary/30"
+            }`}
+          >
+            <History size={12} />
+            {lang === "es" ? "Historial" : "History"}
+          </button>
         </div>
       </div>
 
-      {/* ─── Main Chat Area ─── */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Chat header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/30 flex items-center justify-center">
-                <Bot size={18} className="text-primary" />
-              </div>
-              <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-green-500 border-2 border-background" />
+      {/* ─── Body: History panel + Chat ─── */}
+      <div className="flex flex-1 min-h-0">
+        {/* History sidebar (toggled) */}
+        {showHistory && (
+          <div className="w-56 shrink-0 border-r border-border flex flex-col bg-background">
+            <div className="flex items-center justify-between px-3 py-2.5 border-b border-border">
+              <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">
+                {lang === "es" ? "Conversaciones" : "Conversations"}
+              </span>
+              <button onClick={() => setShowHistory(false)} className="text-muted-foreground hover:text-foreground transition-colors">
+                <PanelLeftClose size={14} />
+              </button>
             </div>
-            <div>
-              <h1 className="text-sm font-bold text-foreground flex items-center gap-1.5">
-                NOVY <Sparkles size={12} className="text-primary" />
-              </h1>
-              <p className="text-[10px] text-muted-foreground">{lang === "es" ? "Centro de Comando CRM · IA" : "CRM Command Center · AI"}</p>
+            <div className="flex-1 overflow-y-auto py-1" style={{ scrollbarWidth: "none" }}>
+              {conversations.map((c) => (
+                <button
+                  key={c.id}
+                  onClick={() => {
+                    if (c.id === "today") setMessages(MOCK_MESSAGES);
+                    setConversations(prev => prev.map(x => ({ ...x, active: x.id === c.id })));
+                  }}
+                  className={`w-full text-left px-3 py-2.5 text-xs transition-colors ${
+                    c.active
+                      ? "bg-primary/10 text-foreground border-l-2 border-primary"
+                      : "text-muted-foreground hover:bg-card hover:text-foreground border-l-2 border-transparent"
+                  }`}
+                >
+                  <span className="block font-medium truncate">{c.title}</span>
+                  <span className="text-[10px] text-muted-foreground">{c.date}</span>
+                </button>
+              ))}
             </div>
           </div>
-          <div className="flex items-center gap-4 text-[10px] text-muted-foreground">
-            <span><strong className="text-foreground">5</strong> {lang === "es" ? "prospectos" : "prospects"}</span>
-            <span><strong className="text-primary">$127.5k</strong> pipeline</span>
-            <span><strong className="text-destructive">2</strong> {lang === "es" ? "alertas" : "alerts"}</span>
-          </div>
-        </div>
+        )}
 
-        {/* Messages */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-4 min-h-0">
-          {messages.map((msg) => (
-            <div key={msg.id} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-              <div className={`max-w-[90%] ${msg.role === "novy" ? "flex items-start gap-2.5" : ""}`}>
-                {msg.role === "novy" && (
-                  <div className="w-7 h-7 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0 mt-1">
-                    <Bot size={12} className="text-primary" />
-                  </div>
-                )}
-                <div>
-                  {msg.text && (
-                    <div className={`text-sm leading-relaxed rounded-xl px-4 py-2.5 ${
-                      msg.role === "user"
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-card border border-border text-foreground"
-                    }`}>
-                      <ReactMarkdown components={{
-                        p: ({ children }) => <p className="mb-1 last:mb-0">{children}</p>,
-                        strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
-                      }}>{msg.text}</ReactMarkdown>
+        {/* ─── Main Chat ─── */}
+        <div className="flex-1 flex flex-col min-w-0">
+          {/* Messages */}
+          <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-4 min-h-0">
+            {messages.map((msg) => (
+              <div key={msg.id} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                <div className={`max-w-[85%] ${msg.role === "novy" ? "flex items-start gap-2.5" : ""}`}>
+                  {msg.role === "novy" && (
+                    <div className="w-7 h-7 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0 mt-1">
+                      <Bot size={12} className="text-primary" />
                     </div>
                   )}
-                  {msg.blocks?.map((block, bi) => (
-                    <RichBlockRenderer key={bi} block={block} />
-                  ))}
-                  <span className="text-[10px] text-muted-foreground mt-1 block">{msg.time}</span>
+                  <div>
+                    {msg.text && (
+                      <div className={`text-sm leading-relaxed rounded-xl px-4 py-2.5 ${
+                        msg.role === "user"
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-card border border-border text-foreground"
+                      }`}>
+                        <ReactMarkdown components={{
+                          p: ({ children }) => <p className="mb-1 last:mb-0">{children}</p>,
+                          strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                        }}>{msg.text}</ReactMarkdown>
+                      </div>
+                    )}
+                    {msg.blocks?.map((block, bi) => (
+                      <RichBlockRenderer key={bi} block={block} />
+                    ))}
+                    <span className="text-[10px] text-muted-foreground mt-1 block">{msg.time}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-
-          {isTyping && (
-            <div className="flex items-start gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
-                <Bot size={12} className="text-primary" />
-              </div>
-              <div className="bg-card border border-border rounded-xl px-4 py-3">
-                <div className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: "0ms" }} />
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: "150ms" }} />
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: "300ms" }} />
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Quick chips (horizontal scroll) */}
-        <div className="px-4 pb-2 shrink-0">
-          <div className="flex gap-1.5 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
-            {QUICK_CHIPS.map((chip) => (
-              <button
-                key={chip}
-                onClick={() => {
-                  const time = new Date().toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
-                  setMessages(prev => [...prev, { id: Date.now(), role: "user", text: chip, time }]);
-                }}
-                className="text-xs px-3 py-1.5 rounded-lg border border-border bg-card text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-primary/5 transition-all whitespace-nowrap shrink-0"
-              >
-                {chip}
-              </button>
             ))}
-          </div>
-        </div>
 
-        {/* Input area */}
-        <form
-          onSubmit={(e) => { e.preventDefault(); handleSend(); }}
-          className="shrink-0 px-4 pb-3 pt-2 border-t border-border"
-        >
-          <div className="flex items-end gap-2">
-            <button type="button" className="w-9 h-9 rounded-lg border border-border bg-card flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors shrink-0 mb-0.5">
-              <Paperclip size={14} />
-            </button>
-            <div className="flex-1 relative">
-              <textarea
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-                placeholder={lang === "es" ? "Escribe un comando o pregunta a NOVY..." : "Type a command or ask NOVY..."}
-                className="w-full bg-card border border-border rounded-xl px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all resize-none min-h-[42px] max-h-[120px]"
-                rows={1}
-                disabled={isTyping}
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={isTyping || !input.trim()}
-              className="w-9 h-9 rounded-lg bg-primary hover:bg-primary/90 disabled:opacity-30 flex items-center justify-center transition-all shrink-0 mb-0.5"
-            >
-              <Send size={14} className="text-primary-foreground" />
-            </button>
+            {isTyping && (
+              <div className="flex items-start gap-2.5">
+                <div className="w-7 h-7 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+                  <Bot size={12} className="text-primary" />
+                </div>
+                <div className="bg-card border border-border rounded-xl px-4 py-3">
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: "0ms" }} />
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: "150ms" }} />
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: "300ms" }} />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-        </form>
+
+          {/* Quick chips */}
+          <div className="px-4 pb-2 shrink-0">
+            <div className="flex gap-1.5 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
+              {QUICK_CHIPS.map((chip) => (
+                <button
+                  key={chip}
+                  onClick={() => {
+                    const time = new Date().toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
+                    setMessages(prev => [...prev, { id: Date.now(), role: "user", text: chip, time }]);
+                  }}
+                  className="text-xs px-3 py-1.5 rounded-lg border border-border bg-card text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-primary/5 transition-all whitespace-nowrap shrink-0"
+                >
+                  {chip}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Input */}
+          <form
+            onSubmit={(e) => { e.preventDefault(); handleSend(); }}
+            className="shrink-0 px-4 pb-3 pt-2 border-t border-border"
+          >
+            <div className="flex items-end gap-2">
+              <button type="button" className="w-9 h-9 rounded-lg border border-border bg-card flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors shrink-0 mb-0.5">
+                <Paperclip size={14} />
+              </button>
+              <div className="flex-1">
+                <textarea
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
+                  placeholder={lang === "es" ? "Escribe un comando o pregunta a NOVY..." : "Type a command or ask NOVY..."}
+                  className="w-full bg-card border border-border rounded-xl px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all resize-none min-h-[42px] max-h-[120px]"
+                  rows={1}
+                  disabled={isTyping}
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={isTyping || !input.trim()}
+                className="w-9 h-9 rounded-lg bg-primary hover:bg-primary/90 disabled:opacity-30 flex items-center justify-center transition-all shrink-0 mb-0.5"
+              >
+                <Send size={14} className="text-primary-foreground" />
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
