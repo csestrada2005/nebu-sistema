@@ -32,6 +32,7 @@ const pageLabels: Record<Page, Record<"es" | "en", string>> = {
   configuracion: { es: "Configuración", en: "Settings" },
   tareas: { es: "Tareas", en: "Tasks" },
   leads: { es: "Leads", en: "Leads" },
+  "portal-cliente": { es: "Portal Cliente", en: "Client Portal" },
 };
 
 const Topbar = ({ onToggleSidebar, activePage, projectName }: TopbarProps) => {
