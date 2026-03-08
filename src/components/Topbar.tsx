@@ -34,6 +34,9 @@ const pageLabels: Record<Page, Record<"es" | "en", string>> = {
   leads: { es: "Leads", en: "Leads" },
   "portal-cliente": { es: "Portal Cliente", en: "Client Portal" },
   automatizaciones: { es: "Automatizaciones", en: "Automations" },
+  webhooks: { es: "Webhooks", en: "Webhooks" },
+  roles: { es: "Roles y Accesos", en: "Roles & Access" },
+  integraciones: { es: "Integraciones", en: "Integrations" },
 };
 
 const Topbar = ({ onToggleSidebar, activePage, projectName }: TopbarProps) => {

@@ -27,6 +27,9 @@ import TareasPage from "@/pages/TareasPage";
 import LeadsPage from "@/pages/LeadsPage";
 import PortalClientePage from "@/pages/PortalClientePage";
 import AutomatizacionesPage from "@/pages/AutomatizacionesPage";
+import WebhooksPage from "@/pages/WebhooksPage";
+import RolesPage from "@/pages/RolesPage";
+import IntegracionesPage from "@/pages/IntegracionesPage";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 
 const Index = () => {
@@ -63,6 +66,9 @@ const Index = () => {
     leads: LeadsPage,
     "portal-cliente": PortalClientePage,
     automatizaciones: AutomatizacionesPage,
+    webhooks: WebhooksPage,
+    roles: RolesPage,
+    integraciones: IntegracionesPage,
   };
 
   const ActiveComponent = pages[activePage];
