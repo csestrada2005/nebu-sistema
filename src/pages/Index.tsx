@@ -54,6 +54,9 @@ const Index = () => {
     finanzas: FinanzasPage,
     linkedin: LinkedInPage,
     novy: NovyPage,
+    calendario: CalendarioPage,
+    configuracion: ConfiguracionPage,
+    tareas: TareasPage,
   };
 
   const ActiveComponent = pages[activePage];

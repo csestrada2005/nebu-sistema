@@ -35,6 +35,10 @@ const navEntries: NavEntry[] = [
   { type: "item", id: "rendimiento", label: { es: "Rendimiento", en: "Performance" }, icon: Activity },
   { type: "item", id: "email", label: { es: "Email", en: "Email" }, icon: Mail },
   { type: "item", id: "finanzas", label: { es: "Finanzas", en: "Finances" }, icon: DollarSign },
+  { type: "label", text: { es: "GESTIÓN", en: "MANAGEMENT" } },
+  { type: "item", id: "calendario", label: { es: "Calendario", en: "Calendar" }, icon: CalendarDays },
+  { type: "item", id: "tareas", label: { es: "Tareas", en: "Tasks" }, icon: CheckSquare },
+  { type: "item", id: "configuracion", label: { es: "Configuración", en: "Settings" }, icon: Settings },
   { type: "item", id: "novy", label: { es: "NOVY", en: "NOVY" }, icon: Bot, badge: 7 },
 ];
 

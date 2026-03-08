@@ -28,6 +28,9 @@ const pageLabels: Record<Page, Record<"es" | "en", string>> = {
   linkedin: { es: "LinkedIn", en: "LinkedIn" },
   novy: { es: "NOVY", en: "NOVY" },
   email: { es: "Email", en: "Email" },
+  calendario: { es: "Calendario", en: "Calendar" },
+  configuracion: { es: "Configuración", en: "Settings" },
+  tareas: { es: "Tareas", en: "Tasks" },
 };
 
 const Topbar = ({ onToggleSidebar, activePage, projectName }: TopbarProps) => {
