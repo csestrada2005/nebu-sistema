@@ -87,6 +87,7 @@ const NovyPage = () => {
   const [expandedTask, setExpandedTask] = useState<number | null>(null);
   const [editingTask, setEditingTask] = useState<number | null>(null);
   const [editText, setEditText] = useState("");
+  const [historyFilter, setHistoryFilter] = useState("all");
   const [chatInput, setChatInput] = useState("");
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>(MOCK_CHAT);
   const chatScrollRef = useRef<HTMLDivElement>(null);
