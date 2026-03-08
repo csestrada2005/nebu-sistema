@@ -44,6 +44,7 @@ const navEntries: NavEntry[] = [
   { type: "label", text: { es: "GESTIÓN", en: "MANAGEMENT" } },
   { type: "item", id: "calendario", label: { es: "Calendario", en: "Calendar" }, icon: CalendarDays },
   { type: "item", id: "tareas", label: { es: "Tareas", en: "Tasks" }, icon: CheckSquare },
+  { type: "item", id: "configuracion", label: { es: "Configuración", en: "Settings" }, icon: Settings },
   { type: "label", text: { es: "IA / AUTOMATIZACIÓN", en: "AI / AUTOMATION" } },
   { type: "item", id: "automatizaciones", label: { es: "Automatizaciones", en: "Automations" }, icon: Zap },
   { type: "item", id: "novy", label: { es: "NOVY", en: "NOVY" }, icon: Bot, badge: 7 },
