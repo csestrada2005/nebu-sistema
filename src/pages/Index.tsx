@@ -21,6 +21,9 @@ import LlamadasPage from "@/pages/LlamadasPage";
 import ReportesPage from "@/pages/ReportesPage";
 import ForecastPage from "@/pages/ForecastPage";
 import RendimientoPage from "@/pages/RendimientoPage";
+import CalendarioPage from "@/pages/CalendarioPage";
+import ConfiguracionPage from "@/pages/ConfiguracionPage";
+import TareasPage from "@/pages/TareasPage";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 
 const Index = () => {
@@ -51,6 +54,9 @@ const Index = () => {
     finanzas: FinanzasPage,
     linkedin: LinkedInPage,
     novy: NovyPage,
+    calendario: CalendarioPage,
+    configuracion: ConfiguracionPage,
+    tareas: TareasPage,
   };
 
   const ActiveComponent = pages[activePage];

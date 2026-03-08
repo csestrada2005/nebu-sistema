@@ -1,7 +1,7 @@
-import { Home, Briefcase, GitBranch, Wrench, DollarSign, Linkedin, Mail, Bot, BarChart2, BarChart3, Users, FileText, Receipt, MessageSquare, Target, Phone, TrendingUp, Activity } from "lucide-react";
+import { Home, Briefcase, GitBranch, Wrench, DollarSign, Linkedin, Mail, Bot, BarChart2, BarChart3, Users, FileText, Receipt, MessageSquare, Target, Phone, TrendingUp, Activity, CalendarDays, Settings, CheckSquare } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-export type Page = "dashboard" | "proyectos" | "pipeline" | "linkedin" | "herramientas" | "mis-webs" | "contactos" | "contratos" | "cotizaciones" | "email" | "finanzas" | "novy" | "plantillas" | "vendedores" | "oportunidades" | "llamadas" | "reportes" | "forecast" | "rendimiento";
+export type Page = "dashboard" | "proyectos" | "pipeline" | "linkedin" | "herramientas" | "mis-webs" | "contactos" | "contratos" | "cotizaciones" | "email" | "finanzas" | "novy" | "plantillas" | "vendedores" | "oportunidades" | "llamadas" | "reportes" | "forecast" | "rendimiento" | "calendario" | "configuracion" | "tareas";
 
 interface AppSidebarProps {
   activePage: Page;
@@ -35,6 +35,10 @@ const navEntries: NavEntry[] = [
   { type: "item", id: "rendimiento", label: { es: "Rendimiento", en: "Performance" }, icon: Activity },
   { type: "item", id: "email", label: { es: "Email", en: "Email" }, icon: Mail },
   { type: "item", id: "finanzas", label: { es: "Finanzas", en: "Finances" }, icon: DollarSign },
+  { type: "label", text: { es: "GESTIÓN", en: "MANAGEMENT" } },
+  { type: "item", id: "calendario", label: { es: "Calendario", en: "Calendar" }, icon: CalendarDays },
+  { type: "item", id: "tareas", label: { es: "Tareas", en: "Tasks" }, icon: CheckSquare },
+  { type: "item", id: "configuracion", label: { es: "Configuración", en: "Settings" }, icon: Settings },
   { type: "item", id: "novy", label: { es: "NOVY", en: "NOVY" }, icon: Bot, badge: 7 },
 ];
 
