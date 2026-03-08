@@ -11,6 +11,7 @@ import LinkedInPage from "@/pages/LinkedInPage";
 import NovyPage from "@/pages/NovyPage";
 import EmailPage from "@/pages/EmailPage";
 import MisWebsPage from "@/pages/MisWebsPage";
+import ContactosPage from "@/pages/ContactosPage";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 
 const Index = () => {
@@ -27,6 +28,7 @@ const Index = () => {
     pipeline: PipelineWrapper,
     herramientas: HerramientasPage,
     "mis-webs": MisWebsPage,
+    contactos: ContactosPage,
     email: EmailPage,
     finanzas: FinanzasPage,
     linkedin: LinkedInPage,
