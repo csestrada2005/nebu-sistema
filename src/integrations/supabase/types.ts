@@ -44,6 +44,54 @@ export type Database = {
         }
         Relationships: []
       }
+      leads: {
+        Row: {
+          created_at: string
+          email: string | null
+          empresa: string
+          estado: string
+          fuente: string | null
+          id: string
+          linkedin_url: string | null
+          nombre: string
+          notas: string | null
+          servicio: string | null
+          telefono: string | null
+          ultimo_contacto: string | null
+          valor_estimado: number | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          empresa?: string
+          estado?: string
+          fuente?: string | null
+          id?: string
+          linkedin_url?: string | null
+          nombre: string
+          notas?: string | null
+          servicio?: string | null
+          telefono?: string | null
+          ultimo_contacto?: string | null
+          valor_estimado?: number | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          empresa?: string
+          estado?: string
+          fuente?: string | null
+          id?: string
+          linkedin_url?: string | null
+          nombre?: string
+          notas?: string | null
+          servicio?: string | null
+          telefono?: string | null
+          ultimo_contacto?: string | null
+          valor_estimado?: number | null
+        }
+        Relationships: []
+      }
       tasks: {
         Row: {
           assignee: string
