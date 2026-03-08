@@ -604,15 +604,34 @@ const NovyPage = () => {
         )}
       </div>
 
-      {/* ──── Quick Commands ──── */}
+      {/* ──── Quick Commands (horizontal scroll) ──── */}
       <div className="shrink-0 pb-2">
-        <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-2">{tt.quickLabel}</p>
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{tt.quickLabel}</p>
+          <button
+            onClick={() => {
+              setMessages([{
+                id: Date.now(),
+                role: "novy",
+                time: new Date().toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" }),
+                text: lang === "es"
+                  ? "Nueva conversación iniciada. ¿En qué te ayudo?"
+                  : "New conversation started. How can I help?",
+                blocks: [{ type: "kpis" }],
+              }]);
+            }}
+            className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-primary transition-colors"
+          >
+            <Plus size={12} />
+            {lang === "es" ? "Nueva conversación" : "New conversation"}
+          </button>
+        </div>
+        <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide" style={{ scrollbarWidth: "none" }}>
           {quickCmds.map((cmd) => (
             <button
               key={cmd.cmd}
               onClick={() => sendMessage(cmd.cmd)}
-              className="text-xs px-3 py-1.5 rounded-lg border border-border bg-card text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-primary/5 transition-all"
+              className="text-xs px-3 py-1.5 rounded-lg border border-border bg-card text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-primary/5 transition-all whitespace-nowrap shrink-0"
             >
               {cmd.label}
             </button>
