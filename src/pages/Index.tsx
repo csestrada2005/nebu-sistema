@@ -18,6 +18,9 @@ import PlantillasPage from "@/pages/PlantillasPage";
 import VendedoresPage from "@/pages/VendedoresPage";
 import OportunidadesPage from "@/pages/OportunidadesPage";
 import LlamadasPage from "@/pages/LlamadasPage";
+import ReportesPage from "@/pages/ReportesPage";
+import ForecastPage from "@/pages/ForecastPage";
+import RendimientoPage from "@/pages/RendimientoPage";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 
 const Index = () => {
@@ -41,6 +44,9 @@ const Index = () => {
     vendedores: VendedoresPage,
     oportunidades: OportunidadesPage,
     llamadas: LlamadasPage,
+    reportes: ReportesPage,
+    forecast: ForecastPage,
+    rendimiento: RendimientoPage,
     email: EmailPage,
     finanzas: FinanzasPage,
     linkedin: LinkedInPage,
