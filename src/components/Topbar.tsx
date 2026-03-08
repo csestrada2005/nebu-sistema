@@ -15,6 +15,7 @@ const pageLabels: Record<Page, Record<"es" | "en", string>> = {
   herramientas: { es: "Herramientas", en: "Tools" },
   "mis-webs": { es: "Mis Webs", en: "My Webs" },
   contactos: { es: "Contactos", en: "Contacts" },
+  contratos: { es: "Contratos", en: "Contracts" },
   finanzas: { es: "Finanzas", en: "Finances" },
   linkedin: { es: "LinkedIn", en: "LinkedIn" },
   novy: { es: "NOVY", en: "NOVY" },
