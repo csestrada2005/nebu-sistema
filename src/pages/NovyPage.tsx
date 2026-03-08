@@ -320,6 +320,7 @@ const ForecastCard = ({ lang }: { lang: "es" | "en" }) => {
       </div>
     </div>
   );
+};
 
 /* ──────────────────── NOVY Smart Reply (pattern matching for visual blocks) ──────────────────── */
 function generateSmartReply(input: string, lang: "es" | "en"): ChatMessage {
