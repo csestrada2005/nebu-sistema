@@ -13,6 +13,7 @@ import EmailPage from "@/pages/EmailPage";
 import MisWebsPage from "@/pages/MisWebsPage";
 import ContactosPage from "@/pages/ContactosPage";
 import ContratosPage from "@/pages/ContratosPage";
+import CotizacionesPage from "@/pages/CotizacionesPage";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 
 const Index = () => {
