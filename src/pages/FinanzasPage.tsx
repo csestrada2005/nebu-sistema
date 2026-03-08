@@ -158,6 +158,92 @@ const FinanzasPage: React.FC = () => {
         </div>
       </div>
 
+      {/* Cash Flow Chart */}
+      <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-6">
+        <h2 className="text-xs text-[#E53E3E] font-bold uppercase tracking-widest mb-5">{lang === "es" ? "Flujo de Caja" : "Cash Flow"}</h2>
+        <ResponsiveContainer width="100%" height={280}>
+          <LineChart data={[
+            { month: lang === "es" ? "Oct" : "Oct", ingresos: 45000, egresos: 28000 },
+            { month: lang === "es" ? "Nov" : "Nov", ingresos: 38000, egresos: 25000 },
+            { month: lang === "es" ? "Dic" : "Dec", ingresos: 52000, egresos: 30000 },
+            { month: lang === "es" ? "Ene" : "Jan", ingresos: 41000, egresos: 27000 },
+            { month: lang === "es" ? "Feb" : "Feb", ingresos: 35000, egresos: 32000 },
+            { month: lang === "es" ? "Mar" : "Mar", ingresos: 48000, egresos: 29000 },
+          ]}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
+            <XAxis dataKey="month" tick={{ fill: "#888", fontSize: 12 }} axisLine={{ stroke: "#2a2a2a" }} />
+            <YAxis tick={{ fill: "#888", fontSize: 12 }} axisLine={{ stroke: "#2a2a2a" }} tickFormatter={(v) => `$${v / 1000}k`} />
+            <Tooltip contentStyle={{ backgroundColor: "#111", border: "1px solid #2a2a2a", borderRadius: "8px", color: "#fff", fontSize: "12px" }} formatter={(value: number) => [`$${value.toLocaleString()}`, ""]} />
+            <Legend wrapperStyle={{ fontSize: "12px", color: "#888" }} />
+            <Line type="monotone" dataKey="ingresos" name={lang === "es" ? "Ingresos" : "Revenue"} stroke="#22c55e" strokeWidth={2} dot={{ fill: "#22c55e", r: 4 }} />
+            <Line type="monotone" dataKey="egresos" name={lang === "es" ? "Egresos" : "Expenses"} stroke="#ef4444" strokeWidth={2} dot={{ fill: "#ef4444", r: 4 }} />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Revenue by Seller */}
+      <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-6">
+        <h2 className="text-xs text-[#E53E3E] font-bold uppercase tracking-widest mb-5">{lang === "es" ? "Ingresos por Vendedor" : "Revenue by Seller"}</h2>
+        <ResponsiveContainer width="100%" height={200}>
+          <BarChart layout="vertical" data={[
+            { name: "Olivia", value: 85000, pct: "45%" },
+            { name: "Ali Hassan", value: 62000, pct: "33%" },
+            { name: "Rodrigo", value: 42000, pct: "22%" },
+          ]} margin={{ left: 20 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" horizontal={false} />
+            <XAxis type="number" tick={{ fill: "#888", fontSize: 12 }} axisLine={{ stroke: "#2a2a2a" }} tickFormatter={(v) => `$${v / 1000}k`} />
+            <YAxis type="category" dataKey="name" tick={{ fill: "#ccc", fontSize: 12 }} axisLine={{ stroke: "#2a2a2a" }} width={90} />
+            <Tooltip contentStyle={{ backgroundColor: "#111", border: "1px solid #2a2a2a", borderRadius: "8px", color: "#fff", fontSize: "12px" }} formatter={(value: number) => [`$${value.toLocaleString()} MXN`, ""]} />
+            <Bar dataKey="value" name={lang === "es" ? "Ingresos" : "Revenue"} radius={[0, 6, 6, 0]} barSize={28}>
+              {["#E53E3E", "#f97316", "#f59e0b"].map((color, i) => <Cell key={i} fill={color} />)}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+        <div className="flex gap-4 mt-3 justify-center">
+          {[{ name: "Olivia", pct: "45%", color: "#E53E3E" }, { name: "Ali", pct: "33%", color: "#f97316" }, { name: "Rodrigo", pct: "22%", color: "#f59e0b" }].map(s => (
+            <div key={s.name} className="flex items-center gap-2 text-xs" style={{ color: "#888" }}>
+              <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: s.color }} />
+              {s.name} — {s.pct}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* MRR vs One-time */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Repeat size={16} style={{ color: "#22c55e" }} />
+            <h2 className="text-xs text-[#E53E3E] font-bold uppercase tracking-widest">MRR — {lang === "es" ? "Mantenimiento Recurrente" : "Recurring Maintenance"}</h2>
+          </div>
+          <p className="text-3xl font-bold font-mono text-[#22c55e] mb-4">$12,500<span className="text-sm text-[#888] font-normal">/{lang === "es" ? "mes" : "mo"}</span></p>
+          <div className="space-y-3">
+            {[{ name: "RAWPAW", amount: "$4,500" }, { name: "Boutique Amara", amount: "$3,500" }, { name: "Gym PowerFit", amount: "$4,500" }].map(c => (
+              <div key={c.name} className="flex items-center justify-between py-2" style={{ borderBottom: "1px solid #2a2a2a" }}>
+                <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-[#22c55e]" /><span className="text-sm text-white">{c.name}</span></div>
+                <span className="font-mono text-sm text-[#22c55e]">{c.amount}/{lang === "es" ? "mes" : "mo"}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Briefcase size={16} style={{ color: "#f97316" }} />
+            <h2 className="text-xs text-[#E53E3E] font-bold uppercase tracking-widest">{lang === "es" ? "Proyectos Únicos" : "One-time Projects"}</h2>
+          </div>
+          <p className="text-3xl font-bold font-mono text-[#f97316] mb-1">$35,000</p>
+          <p className="text-xs text-[#888] mb-4">{lang === "es" ? "Este mes" : "This month"}</p>
+          <div className="space-y-3">
+            {[{ name: "Papachoa", desc: lang === "es" ? "Landing + Social Media" : "Landing + Social Media", amount: "$22,500" }, { name: "Bazar Centenario", desc: lang === "es" ? "Plataforma Integral" : "Full Platform", amount: "$12,500" }].map(p => (
+              <div key={p.name} className="flex items-center justify-between py-2" style={{ borderBottom: "1px solid #2a2a2a" }}>
+                <div><span className="text-sm text-white font-medium">{p.name}</span><p className="text-[11px] text-[#666]">{p.desc}</p></div>
+                <span className="font-mono text-sm text-[#f97316]">{p.amount}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       <div className="space-y-3">
         <h2 className="text-xs text-[#E53E3E] font-bold uppercase tracking-widest mb-2">{tt.alertas}</h2>
         {ALERTS[lang].map((alert, i) => (
