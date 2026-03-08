@@ -66,6 +66,9 @@ const Index = () => {
     leads: LeadsPage,
     "portal-cliente": PortalClientePage,
     automatizaciones: AutomatizacionesPage,
+    webhooks: WebhooksPage,
+    roles: RolesPage,
+    integraciones: IntegracionesPage,
   };
 
   const ActiveComponent = pages[activePage];
