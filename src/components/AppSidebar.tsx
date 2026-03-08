@@ -1,7 +1,7 @@
-import { Home, Briefcase, GitBranch, Wrench, DollarSign, Linkedin, Mail, Bot, BarChart2 } from "lucide-react";
+import { Home, Briefcase, GitBranch, Wrench, DollarSign, Linkedin, Mail, Bot, BarChart2, Users } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-export type Page = "dashboard" | "proyectos" | "pipeline" | "linkedin" | "herramientas" | "mis-webs" | "email" | "finanzas" | "novy";
+export type Page = "dashboard" | "proyectos" | "pipeline" | "linkedin" | "herramientas" | "mis-webs" | "contactos" | "email" | "finanzas" | "novy";
 
 interface AppSidebarProps {
   activePage: Page;
