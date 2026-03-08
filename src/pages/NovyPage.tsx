@@ -32,20 +32,24 @@ interface ChatMessage {
 
 /* ──────────────────── Quick Commands ──────────────────── */
 const QUICK_COMMANDS_ES = [
-  { label: "📊 Estado proyectos", cmd: "estado proyectos" },
-  { label: "🔔 Alertas", cmd: "alertas y riesgos" },
-  { label: "💰 Finanzas", cmd: "resumen financiero" },
-  { label: "📈 Pipeline", cmd: "estado pipeline" },
-  { label: "📝 Cotización", cmd: "cotización" },
-  { label: "⏰ Deadlines", cmd: "deadlines" },
+  { label: "📊 Resumen del día", cmd: "resumen general del día" },
+  { label: "➕ Nuevo cliente", cmd: "nuevo cliente" },
+  { label: "📈 Métricas", cmd: "resumen financiero" },
+  { label: "📋 Tareas pendientes", cmd: "alertas y riesgos" },
+  { label: "💰 Forecast", cmd: "forecast del trimestre" },
+  { label: "📄 Nueva cotización", cmd: "cotización" },
+  { label: "⚡ Nueva automatización", cmd: "nueva automatización" },
+  { label: "📧 Redactar email", cmd: "redactar email" },
 ];
 const QUICK_COMMANDS_EN = [
-  { label: "📊 Project status", cmd: "project status" },
-  { label: "🔔 Alerts", cmd: "alerts and risks" },
-  { label: "💰 Finances", cmd: "financial summary" },
-  { label: "📈 Pipeline", cmd: "pipeline status" },
-  { label: "📝 Quote", cmd: "quote" },
-  { label: "⏰ Deadlines", cmd: "deadlines" },
+  { label: "📊 Daily summary", cmd: "daily overview" },
+  { label: "➕ New client", cmd: "new client" },
+  { label: "📈 Metrics", cmd: "financial summary" },
+  { label: "📋 Pending tasks", cmd: "alerts and risks" },
+  { label: "💰 Forecast", cmd: "quarterly forecast" },
+  { label: "📄 New quote", cmd: "quote" },
+  { label: "⚡ New automation", cmd: "new automation" },
+  { label: "📧 Draft email", cmd: "draft email" },
 ];
 
 /* ──────────────────── Rich Visual Components ──────────────────── */
