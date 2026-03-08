@@ -26,6 +26,7 @@ import ConfiguracionPage from "@/pages/ConfiguracionPage";
 import TareasPage from "@/pages/TareasPage";
 import LeadsPage from "@/pages/LeadsPage";
 import PortalClientePage from "@/pages/PortalClientePage";
+import AutomatizacionesPage from "@/pages/AutomatizacionesPage";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 
 const Index = () => {
