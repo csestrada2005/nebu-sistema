@@ -3,7 +3,7 @@ import {
   Bot, Send, Loader2, Zap, TrendingUp, AlertTriangle, Users,
   BarChart3, DollarSign, Briefcase, ArrowUpRight, ArrowDownRight,
   Clock, CheckCircle2, XCircle, Activity, MessageSquare, Sparkles,
-  Target, PieChart, ChevronRight, Globe
+  Target, PieChart, ChevronRight, Globe, Plus
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCrm } from "@/contexts/CrmContext";
@@ -19,7 +19,8 @@ type RichBlock =
   | { type: "projects" }
   | { type: "pipeline" }
   | { type: "kpis" }
-  | { type: "alerts" };
+  | { type: "alerts" }
+  | { type: "forecast" };
 
 interface ChatMessage {
   id: number;
@@ -31,20 +32,24 @@ interface ChatMessage {
 
 /* ──────────────────── Quick Commands ──────────────────── */
 const QUICK_COMMANDS_ES = [
-  { label: "📊 Estado proyectos", cmd: "estado proyectos" },
-  { label: "🔔 Alertas", cmd: "alertas y riesgos" },
-  { label: "💰 Finanzas", cmd: "resumen financiero" },
-  { label: "📈 Pipeline", cmd: "estado pipeline" },
-  { label: "📝 Cotización", cmd: "cotización" },
-  { label: "⏰ Deadlines", cmd: "deadlines" },
+  { label: "📊 Resumen del día", cmd: "resumen general del día" },
+  { label: "➕ Nuevo cliente", cmd: "nuevo cliente" },
+  { label: "📈 Métricas", cmd: "resumen financiero" },
+  { label: "📋 Tareas pendientes", cmd: "alertas y riesgos" },
+  { label: "💰 Forecast", cmd: "forecast del trimestre" },
+  { label: "📄 Nueva cotización", cmd: "cotización" },
+  { label: "⚡ Nueva automatización", cmd: "nueva automatización" },
+  { label: "📧 Redactar email", cmd: "redactar email" },
 ];
 const QUICK_COMMANDS_EN = [
-  { label: "📊 Project status", cmd: "project status" },
-  { label: "🔔 Alerts", cmd: "alerts and risks" },
-  { label: "💰 Finances", cmd: "financial summary" },
-  { label: "📈 Pipeline", cmd: "pipeline status" },
-  { label: "📝 Quote", cmd: "quote" },
-  { label: "⏰ Deadlines", cmd: "deadlines" },
+  { label: "📊 Daily summary", cmd: "daily overview" },
+  { label: "➕ New client", cmd: "new client" },
+  { label: "📈 Metrics", cmd: "financial summary" },
+  { label: "📋 Pending tasks", cmd: "alerts and risks" },
+  { label: "💰 Forecast", cmd: "quarterly forecast" },
+  { label: "📄 New quote", cmd: "quote" },
+  { label: "⚡ New automation", cmd: "new automation" },
+  { label: "📧 Draft email", cmd: "draft email" },
 ];
 
 /* ──────────────────── Rich Visual Components ──────────────────── */
@@ -227,6 +232,96 @@ const AlertsPanel = ({ lang }: { lang: "es" | "en" }) => {
   );
 };
 
+const ForecastCard = ({ lang }: { lang: "es" | "en" }) => {
+  const goal = 200000;
+  const actual = 127500;
+  const pct = ((actual / goal) * 100).toFixed(2);
+  const rows = lang === "es"
+    ? [
+        { label: "Cerrado", value: "$85,000", color: "#22c55e" },
+        { label: "En negociación", value: "$42,500", color: "#f59e0b" },
+        { label: "Proyección cierre", value: "$155,000", color: "#3b82f6" },
+      ]
+    : [
+        { label: "Closed", value: "$85,000", color: "#22c55e" },
+        { label: "In negotiation", value: "$42,500", color: "#f59e0b" },
+        { label: "Projected close", value: "$155,000", color: "#3b82f6" },
+      ];
+
+  return (
+    <div className="mt-2 rounded-lg border border-border bg-card overflow-hidden">
+      {/* Header */}
+      <div className="px-4 py-3 border-b border-border flex items-center gap-2">
+        <TrendingUp size={16} className="text-primary" />
+        <span className="text-sm font-bold text-foreground">📈 FORECAST Q1 2026</span>
+      </div>
+
+      {/* Big number */}
+      <div className="px-4 pt-4 pb-2">
+        <div className="flex items-end justify-between mb-1">
+          <div>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">
+              {lang === "es" ? "Meta trimestral" : "Quarterly goal"}
+            </p>
+            <span className="text-2xl font-bold text-foreground">$200,000</span>
+            <span className="text-xs text-muted-foreground ml-1">MXN</span>
+          </div>
+          <div className="text-right">
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">
+              {lang === "es" ? "Actual" : "Current"}
+            </p>
+            <span className="text-lg font-bold text-primary">$127,500</span>
+            <span className="text-xs text-muted-foreground ml-1">({pct}%)</span>
+          </div>
+        </div>
+
+        {/* Progress bar with gradient */}
+        <div className="w-full h-3 rounded-full bg-secondary mt-2 overflow-hidden">
+          <div
+            className="h-full rounded-full transition-all duration-700"
+            style={{
+              width: `${pct}%`,
+              background: "linear-gradient(90deg, hsl(var(--primary)), hsl(var(--destructive)))",
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Breakdown table */}
+      <div className="px-4 py-3 space-y-2">
+        {rows.map((r, i) => (
+          <div key={i} className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: r.color }} />
+              <span className="text-xs text-muted-foreground">{r.label}</span>
+            </div>
+            <span className="text-xs font-semibold text-foreground">{r.value}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Insight */}
+      <div className="px-4 py-3 border-t border-border bg-primary/5">
+        <p className="text-xs text-foreground leading-relaxed">
+          {lang === "es"
+            ? '💡 Vas al 63.75% de tu meta trimestral. Si cierras Estudio Legal Vega ($55,000) y Restaurante La Barca ($35,000) alcanzas el 87.5%.'
+            : '💡 You\'re at 63.75% of your quarterly goal. If you close Estudio Legal Vega ($55,000) and Restaurante La Barca ($35,000) you\'ll reach 87.5%.'}
+        </p>
+      </div>
+
+      {/* Action buttons */}
+      <div className="px-4 py-3 border-t border-border flex gap-2">
+        <button className="text-xs px-3 py-1.5 rounded-lg border border-primary/30 text-primary hover:bg-primary/10 transition-colors">
+          {lang === "es" ? "Ver Forecast completo" : "View full Forecast"}
+        </button>
+        <button className="text-xs px-3 py-1.5 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors">
+          {lang === "es" ? "Ajustar meta" : "Adjust goal"}
+        </button>
+      </div>
+    </div>
+  );
+};
+
 /* ──────────────────── NOVY Smart Reply (pattern matching for visual blocks) ──────────────────── */
 function generateSmartReply(input: string, lang: "es" | "en"): ChatMessage {
   const lower = input.toLowerCase();
@@ -269,6 +364,15 @@ function generateSmartReply(input: string, lang: "es" | "en"): ChatMessage {
       blocks: [{ type: "alerts" }],
     };
   }
+  if (lower.includes("forecast") || lower.includes("trimest") || lower.includes("quarter") || lower.includes("meta")) {
+    return {
+      ...base,
+      text: lang === "es"
+        ? "Aquí tienes el forecast del trimestre actual:"
+        : "Here's the current quarterly forecast:",
+      blocks: [{ type: "forecast" }],
+    };
+  }
   if (lower.includes("cotiza") || lower.includes("quote")) {
     return {
       ...base,
@@ -277,7 +381,31 @@ function generateSmartReply(input: string, lang: "es" | "en"): ChatMessage {
         : "To generate a quote I need:\n— **Client name**\n— **Service** (Landing, E-commerce, Branding, Web App, etc.)\n— **Additional details** (features, urgency)\n\nCan you provide them?",
     };
   }
-  if (lower.includes("resumen") || lower.includes("summary") || lower.includes("general") || lower.includes("todo") || lower.includes("overview")) {
+  if (lower.includes("nuevo cliente") || lower.includes("new client") || lower.includes("registrar")) {
+    return {
+      ...base,
+      text: lang === "es"
+        ? "Para registrar un nuevo cliente necesito:\n— **Nombre** del contacto\n— **Empresa**\n— **Servicio de interés**\n— **Presupuesto estimado** (opcional)\n— **Canal de contacto** (LinkedIn, WhatsApp, email)\n\n¿Me proporcionas los datos?"
+        : "To register a new client I need:\n— Contact **name**\n— **Company**\n— **Service of interest**\n— **Estimated budget** (optional)\n— **Contact channel** (LinkedIn, WhatsApp, email)\n\nCan you provide the details?",
+    };
+  }
+  if (lower.includes("automatiza") || lower.includes("automation")) {
+    return {
+      ...base,
+      text: lang === "es"
+        ? "Automatizaciones disponibles:\n— **Follow-up automático** — Mensajes programados a leads sin respuesta\n— **Alerta de deadlines** — Notificación 48h antes de vencimiento\n— **Onboarding cliente** — Secuencia de bienvenida automática\n— **Cobro recurrente** — Recordatorio de pagos pendientes\n\n¿Cuál quieres configurar?"
+        : "Available automations:\n— **Auto follow-up** — Scheduled messages to unresponsive leads\n— **Deadline alerts** — Notification 48h before due date\n— **Client onboarding** — Automatic welcome sequence\n— **Recurring billing** — Pending payment reminders\n\nWhich one do you want to set up?",
+    };
+  }
+  if (lower.includes("email") || lower.includes("correo") || lower.includes("redactar") || lower.includes("draft")) {
+    return {
+      ...base,
+      text: lang === "es"
+        ? "¿Para quién es el email? Dime:\n— **Destinatario** (nombre o empresa)\n— **Asunto/propósito** del mensaje\n— **Tono** (formal, casual, seguimiento)\n\nYo lo redacto."
+        : "Who is the email for? Tell me:\n— **Recipient** (name or company)\n— **Subject/purpose** of the message\n— **Tone** (formal, casual, follow-up)\n\nI'll draft it.",
+    };
+  }
+  if (lower.includes("resumen") || lower.includes("summary") || lower.includes("general") || lower.includes("todo") || lower.includes("overview") || lower.includes("día") || lower.includes("day")) {
     return {
       ...base,
       text: lang === "es"
@@ -287,7 +415,7 @@ function generateSmartReply(input: string, lang: "es" | "en"): ChatMessage {
     };
   }
 
-  // Default: connect to edge function later
+  // Default
   return {
     ...base,
     text: lang === "es"
@@ -450,6 +578,7 @@ const NovyPage = () => {
                     {block.type === "pipeline" && <PipelineView lang={lang} />}
                     {block.type === "kpis" && <KPICards lang={lang} />}
                     {block.type === "alerts" && <AlertsPanel lang={lang} />}
+                    {block.type === "forecast" && <ForecastCard lang={lang} />}
                   </div>
                 ))}
 
@@ -475,15 +604,34 @@ const NovyPage = () => {
         )}
       </div>
 
-      {/* ──── Quick Commands ──── */}
+      {/* ──── Quick Commands (horizontal scroll) ──── */}
       <div className="shrink-0 pb-2">
-        <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-2">{tt.quickLabel}</p>
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{tt.quickLabel}</p>
+          <button
+            onClick={() => {
+              setMessages([{
+                id: Date.now(),
+                role: "novy",
+                time: new Date().toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" }),
+                text: lang === "es"
+                  ? "Nueva conversación iniciada. ¿En qué te ayudo?"
+                  : "New conversation started. How can I help?",
+                blocks: [{ type: "kpis" }],
+              }]);
+            }}
+            className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-primary transition-colors"
+          >
+            <Plus size={12} />
+            {lang === "es" ? "Nueva conversación" : "New conversation"}
+          </button>
+        </div>
+        <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide" style={{ scrollbarWidth: "none" }}>
           {quickCmds.map((cmd) => (
             <button
               key={cmd.cmd}
               onClick={() => sendMessage(cmd.cmd)}
-              className="text-xs px-3 py-1.5 rounded-lg border border-border bg-card text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-primary/5 transition-all"
+              className="text-xs px-3 py-1.5 rounded-lg border border-border bg-card text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-primary/5 transition-all whitespace-nowrap shrink-0"
             >
               {cmd.label}
             </button>
