@@ -12,6 +12,7 @@ import NovyPage from "@/pages/NovyPage";
 import EmailPage from "@/pages/EmailPage";
 import MisWebsPage from "@/pages/MisWebsPage";
 import ContactosPage from "@/pages/ContactosPage";
+import ContratosPage from "@/pages/ContratosPage";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 
 const Index = () => {
