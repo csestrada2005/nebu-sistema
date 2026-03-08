@@ -1,6 +1,7 @@
 import React from "react";
-import { DollarSign, TrendingUp, AlertTriangle, CheckCircle, Clock } from "lucide-react";
+import { DollarSign, TrendingUp, AlertTriangle, CheckCircle, Clock, Repeat, Users as UsersIcon, Briefcase } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Cell } from "recharts";
 
 const PROJECTS = [
   { id: "P01", nombre: "RAWPAW", precioTotal: 20000, pagado: 10000, saldo: 0, creditos: 0, dominio: 699, hosting: 0, comision15: 3000, costoTotal: 3699, utilidad: 16301, mensualidad: true, montoMensual: 250,
