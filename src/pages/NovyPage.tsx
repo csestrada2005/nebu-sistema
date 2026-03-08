@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Bot, MessageSquare, Settings, ChevronDown, ChevronUp, Check, X, Pencil, AlertTriangle, FileText, Users, BarChart3, Globe } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Bot, MessageSquare, Settings, ChevronDown, ChevronUp, Check, X, Pencil, AlertTriangle, FileText, Users, BarChart3, Globe, Send } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 type TaskStatus = "pending" | "approved" | "cancelled" | "modified";
