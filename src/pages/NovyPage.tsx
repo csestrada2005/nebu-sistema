@@ -1,9 +1,25 @@
-import { useState } from "react";
-import { Bot, MessageSquare, Settings, ChevronDown, ChevronUp, Check, X, Pencil, AlertTriangle, FileText, Users, BarChart3, Globe } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Bot, MessageSquare, Settings, ChevronDown, ChevronUp, Check, X, Pencil, AlertTriangle, FileText, Users, BarChart3, Globe, Send } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 type TaskStatus = "pending" | "approved" | "cancelled" | "modified";
-type TabId = "tareas" | "historial" | "config";
+type TabId = "tareas" | "historial" | "config" | "chat";
+
+interface ChatMessage {
+  id: number;
+  role: "user" | "novy";
+  text: Record<"es" | "en", string>;
+  time: string;
+}
+
+const MOCK_CHAT: ChatMessage[] = [
+  { id: 1, role: "user", text: { es: "NOVY, ¿cuántos prospectos tenemos esta semana?", en: "NOVY, how many prospects do we have this week?" }, time: "10:15" },
+  { id: 2, role: "novy", text: { es: "Tienes 5 prospectos activos: 2 nuevos contactos, 2 en reunión agendada y 1 en negociación. El de mayor valor es Estudio Legal Vega ($55,000 MXN) en etapa de negociación — lleva 5 días, aún en zona verde.", en: "You have 5 active prospects: 2 new contacts, 2 with scheduled meetings and 1 in negotiation. The highest value is Estudio Legal Vega ($55,000 MXN) in negotiation stage — 5 days in, still in the green zone." }, time: "10:15" },
+  { id: 3, role: "user", text: { es: "¿Algún proyecto en riesgo?", en: "Any project at risk?" }, time: "10:18" },
+  { id: 4, role: "novy", text: { es: "⚠ Sí, dos proyectos requieren atención:\n\n— Papachoa — VENCIDA desde 10 Feb 2026. Anticipo de $11,250 pagado pero el proyecto lleva retraso. Recomiendo contactar a Miriam hoy.\n— Bazar Centenario — VENCIDA desde 23 Feb 2026. Saldo pendiente: $12,500 MXN. Iñigo espera update.\n\nRaw Paw está en revisión cliente, sin alertas.", en: "⚠ Yes, two projects need attention:\n\n— Papachoa — OVERDUE since Feb 10, 2026. Advance of $11,250 paid but project is delayed. I recommend contacting Miriam today.\n— Bazar Centenario — OVERDUE since Feb 23, 2026. Pending balance: $12,500 MXN. Iñigo is waiting for an update.\n\nRaw Paw is in client review, no alerts." }, time: "10:18" },
+  { id: 5, role: "user", text: { es: "Redacta un mensaje para Miriam de Papachoa", en: "Draft a message for Miriam from Papachoa" }, time: "10:22" },
+  { id: 6, role: "novy", text: { es: "Listo. Borrador:\n\n\"Hola Miriam, te escribo para darte un update de tu proyecto. Estamos avanzando en la etapa de diseño y quiero alinear contigo los próximos pasos para no perder ritmo. ¿Tienes 15 minutos esta semana para una llamada rápida?\n\nJosep — Nebu Studio\"\n\n¿Apruebas, modificas o cancelas?", en: "Done. Draft:\n\n\"Hi Miriam, I'm writing to give you a project update. We're progressing on the design phase and I want to align with you on next steps to keep momentum. Do you have 15 minutes this week for a quick call?\n\nJosep — Nebu Studio\"\n\nApprove, modify, or cancel?" }, time: "10:22" },
+];
 
 interface Task {
   id: number; category: string; categoryColor: string;
@@ -72,6 +88,24 @@ const NovyPage = () => {
   const [editingTask, setEditingTask] = useState<number | null>(null);
   const [editText, setEditText] = useState("");
   const [historyFilter, setHistoryFilter] = useState("all");
+  const [chatInput, setChatInput] = useState("");
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>(MOCK_CHAT);
+  const chatScrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (chatScrollRef.current) chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
+  }, [chatMessages]);
+
+  const handleChatSend = () => {
+    if (!chatInput.trim()) return;
+    const newMsg: ChatMessage = { id: Date.now(), role: "user", text: { es: chatInput, en: chatInput }, time: new Date().toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" }) };
+    setChatMessages(prev => [...prev, newMsg]);
+    setChatInput("");
+    setTimeout(() => {
+      const reply: ChatMessage = { id: Date.now() + 1, role: "novy", text: { es: "Entendido. Déjame procesarlo — esta funcionalidad se conectará al backend pronto.", en: "Got it. Let me process that — this feature will connect to the backend soon." }, time: new Date().toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" }) };
+      setChatMessages(prev => [...prev, reply]);
+    }, 1200);
+  };
   const { lang } = useLanguage();
 
   const pendingCount = tasks.filter((t) => t.status === "pending" || t.status === "modified").length;
@@ -85,7 +119,7 @@ const NovyPage = () => {
     es: {
       analyzing: "● Analizando...", agentSub: "Agente IA · Nebu Studio · v1.0",
       pendingAuth: "tareas pendientes de autorización",
-      tabs: [{ id: "tareas" as TabId, label: "Tareas Pendientes" }, { id: "historial" as TabId, label: "Historial" }, { id: "config" as TabId, label: "Configuración" }],
+      tabs: [{ id: "tareas" as TabId, label: "Tareas Pendientes" }, { id: "chat" as TabId, label: "Chat" }, { id: "historial" as TabId, label: "Historial" }, { id: "config" as TabId, label: "Configuración" }],
       detected: "NOVY detectó estas acciones. Revisa, modifica o aprueba cada una.",
       hidePreview: "Ocultar vista previa", showPreview: "Ver vista previa",
       modify: "Modificar", approve: "Aprobar", cancel: "Cancelar",
@@ -106,7 +140,7 @@ const NovyPage = () => {
     en: {
       analyzing: "● Analyzing...", agentSub: "AI Agent · Nebu Studio · v1.0",
       pendingAuth: "tasks pending authorization",
-      tabs: [{ id: "tareas" as TabId, label: "Pending Tasks" }, { id: "historial" as TabId, label: "History" }, { id: "config" as TabId, label: "Settings" }],
+      tabs: [{ id: "tareas" as TabId, label: "Pending Tasks" }, { id: "chat" as TabId, label: "Chat" }, { id: "historial" as TabId, label: "History" }, { id: "config" as TabId, label: "Settings" }],
       detected: "NOVY detected these actions. Review, modify, or approve each one.",
       hidePreview: "Hide preview", showPreview: "View preview",
       modify: "Modify", approve: "Approve", cancel: "Cancel",
@@ -291,6 +325,46 @@ const NovyPage = () => {
               <p className="text-xs" style={{ color: "#555" }}>{tt.backend}</p>
             </div>
           </div>
+        </div>
+      )}
+
+      {activeTab === "chat" && (
+        <div className="flex flex-col rounded-lg overflow-hidden" style={{ backgroundColor: "#111", border: "1px solid #2a2a2a", height: "calc(100vh - 280px)", minHeight: "400px" }}>
+          <div ref={chatScrollRef} className="flex-1 overflow-y-auto p-4 space-y-4">
+            {chatMessages.map((msg) => (
+              <div key={msg.id} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                <div className="flex items-start gap-2 max-w-[80%]">
+                  {msg.role === "novy" && (
+                    <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-1" style={{ background: "linear-gradient(135deg, #1a1a1a, #2a2a2a)", border: "1.5px solid #E53E3E" }}>
+                      <Bot size={14} style={{ color: "#E53E3E" }} />
+                    </div>
+                  )}
+                  <div>
+                    <div className={`text-sm leading-relaxed whitespace-pre-line rounded-lg px-3.5 py-2.5 ${msg.role === "user" ? "" : ""}`}
+                      style={msg.role === "user"
+                        ? { backgroundColor: "#E53E3E", color: "white" }
+                        : { backgroundColor: "#1a1a1a", color: "#e8e8e8", border: "1px solid #2a2a2a" }
+                      }>
+                      {msg.text[lang]}
+                    </div>
+                    <span className="text-[10px] mt-1 block" style={{ color: "#555" }}>{msg.time}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <form onSubmit={(e) => { e.preventDefault(); handleChatSend(); }} className="flex items-center gap-2 p-3" style={{ borderTop: "1px solid #2a2a2a" }}>
+            <input
+              value={chatInput}
+              onChange={(e) => setChatInput(e.target.value)}
+              placeholder={lang === "es" ? "Escribe a NOVY..." : "Message NOVY..."}
+              className="flex-1 bg-transparent text-sm text-white placeholder-[#555] outline-none px-3 py-2 rounded-lg"
+              style={{ backgroundColor: "#1a1a1a", border: "1px solid #333" }}
+            />
+            <button type="submit" disabled={!chatInput.trim()} className="w-9 h-9 rounded-lg flex items-center justify-center transition-colors disabled:opacity-40" style={{ backgroundColor: "#E53E3E" }}>
+              <Send size={14} className="text-white" />
+            </button>
+          </form>
         </div>
       )}
     </div>
