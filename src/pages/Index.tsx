@@ -60,6 +60,7 @@ const Index = () => {
     configuracion: ConfiguracionPage,
     tareas: TareasPage,
     leads: LeadsPage,
+    "portal-cliente": PortalClientePage,
   };
 
   const ActiveComponent = pages[activePage];
