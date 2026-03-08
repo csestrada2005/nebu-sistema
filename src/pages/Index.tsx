@@ -28,6 +28,7 @@ const Index = () => {
     pipeline: PipelineWrapper,
     herramientas: HerramientasPage,
     "mis-webs": MisWebsPage,
+    contactos: ContactosPage,
     email: EmailPage,
     finanzas: FinanzasPage,
     linkedin: LinkedInPage,
