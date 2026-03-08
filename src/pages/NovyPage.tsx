@@ -232,6 +232,95 @@ const AlertsPanel = ({ lang }: { lang: "es" | "en" }) => {
   );
 };
 
+const ForecastCard = ({ lang }: { lang: "es" | "en" }) => {
+  const goal = 200000;
+  const actual = 127500;
+  const pct = ((actual / goal) * 100).toFixed(2);
+  const rows = lang === "es"
+    ? [
+        { label: "Cerrado", value: "$85,000", color: "#22c55e" },
+        { label: "En negociación", value: "$42,500", color: "#f59e0b" },
+        { label: "Proyección cierre", value: "$155,000", color: "#3b82f6" },
+      ]
+    : [
+        { label: "Closed", value: "$85,000", color: "#22c55e" },
+        { label: "In negotiation", value: "$42,500", color: "#f59e0b" },
+        { label: "Projected close", value: "$155,000", color: "#3b82f6" },
+      ];
+
+  return (
+    <div className="mt-2 rounded-lg border border-border bg-card overflow-hidden">
+      {/* Header */}
+      <div className="px-4 py-3 border-b border-border flex items-center gap-2">
+        <TrendingUp size={16} className="text-primary" />
+        <span className="text-sm font-bold text-foreground">📈 FORECAST Q1 2026</span>
+      </div>
+
+      {/* Big number */}
+      <div className="px-4 pt-4 pb-2">
+        <div className="flex items-end justify-between mb-1">
+          <div>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">
+              {lang === "es" ? "Meta trimestral" : "Quarterly goal"}
+            </p>
+            <span className="text-2xl font-bold text-foreground">$200,000</span>
+            <span className="text-xs text-muted-foreground ml-1">MXN</span>
+          </div>
+          <div className="text-right">
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">
+              {lang === "es" ? "Actual" : "Current"}
+            </p>
+            <span className="text-lg font-bold text-primary">$127,500</span>
+            <span className="text-xs text-muted-foreground ml-1">({pct}%)</span>
+          </div>
+        </div>
+
+        {/* Progress bar with gradient */}
+        <div className="w-full h-3 rounded-full bg-secondary mt-2 overflow-hidden">
+          <div
+            className="h-full rounded-full transition-all duration-700"
+            style={{
+              width: `${pct}%`,
+              background: "linear-gradient(90deg, hsl(var(--primary)), hsl(var(--destructive)))",
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Breakdown table */}
+      <div className="px-4 py-3 space-y-2">
+        {rows.map((r, i) => (
+          <div key={i} className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: r.color }} />
+              <span className="text-xs text-muted-foreground">{r.label}</span>
+            </div>
+            <span className="text-xs font-semibold text-foreground">{r.value}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Insight */}
+      <div className="px-4 py-3 border-t border-border bg-primary/5">
+        <p className="text-xs text-foreground leading-relaxed">
+          {lang === "es"
+            ? '💡 Vas al 63.75% de tu meta trimestral. Si cierras Estudio Legal Vega ($55,000) y Restaurante La Barca ($35,000) alcanzas el 87.5%.'
+            : '💡 You\'re at 63.75% of your quarterly goal. If you close Estudio Legal Vega ($55,000) and Restaurante La Barca ($35,000) you\'ll reach 87.5%.'}
+        </p>
+      </div>
+
+      {/* Action buttons */}
+      <div className="px-4 py-3 border-t border-border flex gap-2">
+        <button className="text-xs px-3 py-1.5 rounded-lg border border-primary/30 text-primary hover:bg-primary/10 transition-colors">
+          {lang === "es" ? "Ver Forecast completo" : "View full Forecast"}
+        </button>
+        <button className="text-xs px-3 py-1.5 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors">
+          {lang === "es" ? "Ajustar meta" : "Adjust goal"}
+        </button>
+      </div>
+    </div>
+  );
+
 /* ──────────────────── NOVY Smart Reply (pattern matching for visual blocks) ──────────────────── */
 function generateSmartReply(input: string, lang: "es" | "en"): ChatMessage {
   const lower = input.toLowerCase();
