@@ -19,7 +19,8 @@ type RichBlock =
   | { type: "projects" }
   | { type: "pipeline" }
   | { type: "kpis" }
-  | { type: "alerts" };
+  | { type: "alerts" }
+  | { type: "forecast" };
 
 interface ChatMessage {
   id: number;
