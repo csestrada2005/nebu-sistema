@@ -15,17 +15,20 @@ type NavEntry =
   | { type: "label"; text: Record<"es" | "en", string> };
 
 const navEntries: NavEntry[] = [
+  { type: "label", text: { es: "PRINCIPAL", en: "MAIN" } },
   { type: "item", id: "dashboard", label: { es: "Dashboard", en: "Dashboard" }, icon: Home },
   { type: "item", id: "proyectos", label: { es: "Proyectos", en: "Projects" }, icon: Briefcase },
   { type: "item", id: "pipeline", label: { es: "Pipeline", en: "Pipeline" }, icon: GitBranch },
   { type: "item", id: "linkedin", label: { es: "LinkedIn", en: "LinkedIn" }, icon: Linkedin },
-  { type: "item", id: "herramientas", label: { es: "Herramientas", en: "Tools" }, icon: Wrench },
-  { type: "item", id: "mis-webs", label: { es: "Mis Webs", en: "My Webs" }, icon: BarChart2 },
+  { type: "label", text: { es: "CRM", en: "CRM" } },
+  { type: "item", id: "leads", label: { es: "Leads", en: "Leads" }, icon: UserPlus },
   { type: "item", id: "contactos", label: { es: "Contactos", en: "Contacts" }, icon: Users },
   { type: "item", id: "contratos", label: { es: "Contratos", en: "Contracts" }, icon: FileText },
   { type: "item", id: "cotizaciones", label: { es: "Cotizaciones", en: "Quotes" }, icon: Receipt },
   { type: "item", id: "plantillas", label: { es: "Plantillas", en: "Templates" }, icon: MessageSquare },
-  { type: "item", id: "leads", label: { es: "Leads", en: "Leads" }, icon: UserPlus },
+  { type: "label", text: { es: "HERRAMIENTAS", en: "TOOLS" } },
+  { type: "item", id: "herramientas", label: { es: "Herramientas", en: "Tools" }, icon: Wrench },
+  { type: "item", id: "mis-webs", label: { es: "Mis Webs", en: "My Webs" }, icon: BarChart2 },
   { type: "label", text: { es: "VENTAS", en: "SALES" } },
   { type: "item", id: "vendedores", label: { es: "Vendedores", en: "Sellers" }, icon: Users },
   { type: "item", id: "oportunidades", label: { es: "Oportunidades", en: "Opportunities" }, icon: Target },
