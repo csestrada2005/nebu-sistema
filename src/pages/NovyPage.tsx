@@ -364,6 +364,15 @@ function generateSmartReply(input: string, lang: "es" | "en"): ChatMessage {
       blocks: [{ type: "alerts" }],
     };
   }
+  if (lower.includes("forecast") || lower.includes("trimest") || lower.includes("quarter") || lower.includes("meta")) {
+    return {
+      ...base,
+      text: lang === "es"
+        ? "Aquí tienes el forecast del trimestre actual:"
+        : "Here's the current quarterly forecast:",
+      blocks: [{ type: "forecast" }],
+    };
+  }
   if (lower.includes("cotiza") || lower.includes("quote")) {
     return {
       ...base,
@@ -372,7 +381,31 @@ function generateSmartReply(input: string, lang: "es" | "en"): ChatMessage {
         : "To generate a quote I need:\n— **Client name**\n— **Service** (Landing, E-commerce, Branding, Web App, etc.)\n— **Additional details** (features, urgency)\n\nCan you provide them?",
     };
   }
-  if (lower.includes("resumen") || lower.includes("summary") || lower.includes("general") || lower.includes("todo") || lower.includes("overview")) {
+  if (lower.includes("nuevo cliente") || lower.includes("new client") || lower.includes("registrar")) {
+    return {
+      ...base,
+      text: lang === "es"
+        ? "Para registrar un nuevo cliente necesito:\n— **Nombre** del contacto\n— **Empresa**\n— **Servicio de interés**\n— **Presupuesto estimado** (opcional)\n— **Canal de contacto** (LinkedIn, WhatsApp, email)\n\n¿Me proporcionas los datos?"
+        : "To register a new client I need:\n— Contact **name**\n— **Company**\n— **Service of interest**\n— **Estimated budget** (optional)\n— **Contact channel** (LinkedIn, WhatsApp, email)\n\nCan you provide the details?",
+    };
+  }
+  if (lower.includes("automatiza") || lower.includes("automation")) {
+    return {
+      ...base,
+      text: lang === "es"
+        ? "Automatizaciones disponibles:\n— **Follow-up automático** — Mensajes programados a leads sin respuesta\n— **Alerta de deadlines** — Notificación 48h antes de vencimiento\n— **Onboarding cliente** — Secuencia de bienvenida automática\n— **Cobro recurrente** — Recordatorio de pagos pendientes\n\n¿Cuál quieres configurar?"
+        : "Available automations:\n— **Auto follow-up** — Scheduled messages to unresponsive leads\n— **Deadline alerts** — Notification 48h before due date\n— **Client onboarding** — Automatic welcome sequence\n— **Recurring billing** — Pending payment reminders\n\nWhich one do you want to set up?",
+    };
+  }
+  if (lower.includes("email") || lower.includes("correo") || lower.includes("redactar") || lower.includes("draft")) {
+    return {
+      ...base,
+      text: lang === "es"
+        ? "¿Para quién es el email? Dime:\n— **Destinatario** (nombre o empresa)\n— **Asunto/propósito** del mensaje\n— **Tono** (formal, casual, seguimiento)\n\nYo lo redacto."
+        : "Who is the email for? Tell me:\n— **Recipient** (name or company)\n— **Subject/purpose** of the message\n— **Tone** (formal, casual, follow-up)\n\nI'll draft it.",
+    };
+  }
+  if (lower.includes("resumen") || lower.includes("summary") || lower.includes("general") || lower.includes("todo") || lower.includes("overview") || lower.includes("día") || lower.includes("day")) {
     return {
       ...base,
       text: lang === "es"
@@ -382,7 +415,7 @@ function generateSmartReply(input: string, lang: "es" | "en"): ChatMessage {
     };
   }
 
-  // Default: connect to edge function later
+  // Default
   return {
     ...base,
     text: lang === "es"
