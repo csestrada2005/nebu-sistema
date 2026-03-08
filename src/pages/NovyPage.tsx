@@ -3,7 +3,23 @@ import { Bot, MessageSquare, Settings, ChevronDown, ChevronUp, Check, X, Pencil,
 import { useLanguage } from "@/contexts/LanguageContext";
 
 type TaskStatus = "pending" | "approved" | "cancelled" | "modified";
-type TabId = "tareas" | "historial" | "config";
+type TabId = "tareas" | "historial" | "config" | "chat";
+
+interface ChatMessage {
+  id: number;
+  role: "user" | "novy";
+  text: Record<"es" | "en", string>;
+  time: string;
+}
+
+const MOCK_CHAT: ChatMessage[] = [
+  { id: 1, role: "user", text: { es: "NOVY, ¿cuántos prospectos tenemos esta semana?", en: "NOVY, how many prospects do we have this week?" }, time: "10:15" },
+  { id: 2, role: "novy", text: { es: "Tienes 5 prospectos activos: 2 nuevos contactos, 2 en reunión agendada y 1 en negociación. El de mayor valor es Estudio Legal Vega ($55,000 MXN) en etapa de negociación — lleva 5 días, aún en zona verde.", en: "You have 5 active prospects: 2 new contacts, 2 with scheduled meetings and 1 in negotiation. The highest value is Estudio Legal Vega ($55,000 MXN) in negotiation stage — 5 days in, still in the green zone." }, time: "10:15" },
+  { id: 3, role: "user", text: { es: "¿Algún proyecto en riesgo?", en: "Any project at risk?" }, time: "10:18" },
+  { id: 4, role: "novy", text: { es: "⚠ Sí, dos proyectos requieren atención:\n\n— Papachoa — VENCIDA desde 10 Feb 2026. Anticipo de $11,250 pagado pero el proyecto lleva retraso. Recomiendo contactar a Miriam hoy.\n— Bazar Centenario — VENCIDA desde 23 Feb 2026. Saldo pendiente: $12,500 MXN. Iñigo espera update.\n\nRaw Paw está en revisión cliente, sin alertas.", en: "⚠ Yes, two projects need attention:\n\n— Papachoa — OVERDUE since Feb 10, 2026. Advance of $11,250 paid but project is delayed. I recommend contacting Miriam today.\n— Bazar Centenario — OVERDUE since Feb 23, 2026. Pending balance: $12,500 MXN. Iñigo is waiting for an update.\n\nRaw Paw is in client review, no alerts." }, time: "10:18" },
+  { id: 5, role: "user", text: { es: "Redacta un mensaje para Miriam de Papachoa", en: "Draft a message for Miriam from Papachoa" }, time: "10:22" },
+  { id: 6, role: "novy", text: { es: "Listo. Borrador:\n\n\"Hola Miriam, te escribo para darte un update de tu proyecto. Estamos avanzando en la etapa de diseño y quiero alinear contigo los próximos pasos para no perder ritmo. ¿Tienes 15 minutos esta semana para una llamada rápida?\n\nJosep — Nebu Studio\"\n\n¿Apruebas, modificas o cancelas?", en: "Done. Draft:\n\n\"Hi Miriam, I'm writing to give you a project update. We're progressing on the design phase and I want to align with you on next steps to keep momentum. Do you have 15 minutes this week for a quick call?\n\nJosep — Nebu Studio\"\n\nApprove, modify, or cancel?" }, time: "10:22" },
+];
 
 interface Task {
   id: number; category: string; categoryColor: string;
