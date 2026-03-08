@@ -3,7 +3,7 @@ import {
   Bot, Send, Loader2, Zap, TrendingUp, AlertTriangle, Users,
   BarChart3, DollarSign, Briefcase, ArrowUpRight, ArrowDownRight,
   Clock, CheckCircle2, XCircle, Activity, MessageSquare, Sparkles,
-  Target, PieChart, ChevronRight, Globe
+  Target, PieChart, ChevronRight, Globe, Plus
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCrm } from "@/contexts/CrmContext";
