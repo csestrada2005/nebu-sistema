@@ -31,6 +31,7 @@ const pageLabels: Record<Page, Record<"es" | "en", string>> = {
   calendario: { es: "Calendario", en: "Calendar" },
   configuracion: { es: "Configuración", en: "Settings" },
   tareas: { es: "Tareas", en: "Tasks" },
+  leads: { es: "Leads", en: "Leads" },
 };
 
 const Topbar = ({ onToggleSidebar, activePage, projectName }: TopbarProps) => {

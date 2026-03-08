@@ -1,7 +1,7 @@
-import { Home, Briefcase, GitBranch, Wrench, DollarSign, Linkedin, Mail, Bot, BarChart2, BarChart3, Users, FileText, Receipt, MessageSquare, Target, Phone, TrendingUp, Activity, CalendarDays, Settings, CheckSquare } from "lucide-react";
+import { Home, Briefcase, GitBranch, Wrench, DollarSign, Linkedin, Mail, Bot, BarChart2, BarChart3, Users, FileText, Receipt, MessageSquare, Target, Phone, TrendingUp, Activity, CalendarDays, Settings, CheckSquare, UserPlus } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-export type Page = "dashboard" | "proyectos" | "pipeline" | "linkedin" | "herramientas" | "mis-webs" | "contactos" | "contratos" | "cotizaciones" | "email" | "finanzas" | "novy" | "plantillas" | "vendedores" | "oportunidades" | "llamadas" | "reportes" | "forecast" | "rendimiento" | "calendario" | "configuracion" | "tareas";
+export type Page = "dashboard" | "proyectos" | "pipeline" | "linkedin" | "herramientas" | "mis-webs" | "contactos" | "contratos" | "cotizaciones" | "email" | "finanzas" | "novy" | "plantillas" | "vendedores" | "oportunidades" | "llamadas" | "reportes" | "forecast" | "rendimiento" | "calendario" | "configuracion" | "tareas" | "leads";
 
 interface AppSidebarProps {
   activePage: Page;
@@ -25,6 +25,7 @@ const navEntries: NavEntry[] = [
   { type: "item", id: "contratos", label: { es: "Contratos", en: "Contracts" }, icon: FileText },
   { type: "item", id: "cotizaciones", label: { es: "Cotizaciones", en: "Quotes" }, icon: Receipt },
   { type: "item", id: "plantillas", label: { es: "Plantillas", en: "Templates" }, icon: MessageSquare },
+  { type: "item", id: "leads", label: { es: "Leads", en: "Leads" }, icon: UserPlus },
   { type: "label", text: { es: "VENTAS", en: "SALES" } },
   { type: "item", id: "vendedores", label: { es: "Vendedores", en: "Sellers" }, icon: Users },
   { type: "item", id: "oportunidades", label: { es: "Oportunidades", en: "Opportunities" }, icon: Target },
