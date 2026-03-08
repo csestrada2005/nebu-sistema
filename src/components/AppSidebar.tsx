@@ -1,7 +1,7 @@
-import { Home, Briefcase, GitBranch, Wrench, DollarSign, Linkedin, Mail, Bot, BarChart2, Users, FileText, Receipt } from "lucide-react";
+import { Home, Briefcase, GitBranch, Wrench, DollarSign, Linkedin, Mail, Bot, BarChart2, Users, FileText, Receipt, MessageSquare, Target, Phone } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-export type Page = "dashboard" | "proyectos" | "pipeline" | "linkedin" | "herramientas" | "mis-webs" | "contactos" | "contratos" | "cotizaciones" | "email" | "finanzas" | "novy";
+export type Page = "dashboard" | "proyectos" | "pipeline" | "linkedin" | "herramientas" | "mis-webs" | "contactos" | "contratos" | "cotizaciones" | "email" | "finanzas" | "novy" | "plantillas" | "vendedores" | "oportunidades" | "llamadas";
 
 interface AppSidebarProps {
   activePage: Page;
@@ -10,19 +10,28 @@ interface AppSidebarProps {
   onClose: () => void;
 }
 
-const navItems: { id: Page; label: Record<"es" | "en", string>; icon: React.ElementType; badge?: number }[] = [
-  { id: "dashboard", label: { es: "Dashboard", en: "Dashboard" }, icon: Home },
-  { id: "proyectos", label: { es: "Proyectos", en: "Projects" }, icon: Briefcase },
-  { id: "pipeline", label: { es: "Pipeline", en: "Pipeline" }, icon: GitBranch },
-  { id: "linkedin", label: { es: "LinkedIn", en: "LinkedIn" }, icon: Linkedin },
-  { id: "herramientas", label: { es: "Herramientas", en: "Tools" }, icon: Wrench },
-  { id: "mis-webs", label: { es: "Mis Webs", en: "My Webs" }, icon: BarChart2 },
-  { id: "contactos", label: { es: "Contactos", en: "Contacts" }, icon: Users },
-  { id: "contratos", label: { es: "Contratos", en: "Contracts" }, icon: FileText },
-  { id: "cotizaciones", label: { es: "Cotizaciones", en: "Quotes" }, icon: Receipt },
-  { id: "email", label: { es: "Email", en: "Email" }, icon: Mail },
-  { id: "finanzas", label: { es: "Finanzas", en: "Finances" }, icon: DollarSign },
-  { id: "novy", label: { es: "NOVY", en: "NOVY" }, icon: Bot, badge: 7 },
+type NavEntry =
+  | { type: "item"; id: Page; label: Record<"es" | "en", string>; icon: React.ElementType; badge?: number }
+  | { type: "label"; text: Record<"es" | "en", string> };
+
+const navEntries: NavEntry[] = [
+  { type: "item", id: "dashboard", label: { es: "Dashboard", en: "Dashboard" }, icon: Home },
+  { type: "item", id: "proyectos", label: { es: "Proyectos", en: "Projects" }, icon: Briefcase },
+  { type: "item", id: "pipeline", label: { es: "Pipeline", en: "Pipeline" }, icon: GitBranch },
+  { type: "item", id: "linkedin", label: { es: "LinkedIn", en: "LinkedIn" }, icon: Linkedin },
+  { type: "item", id: "herramientas", label: { es: "Herramientas", en: "Tools" }, icon: Wrench },
+  { type: "item", id: "mis-webs", label: { es: "Mis Webs", en: "My Webs" }, icon: BarChart2 },
+  { type: "item", id: "contactos", label: { es: "Contactos", en: "Contacts" }, icon: Users },
+  { type: "item", id: "contratos", label: { es: "Contratos", en: "Contracts" }, icon: FileText },
+  { type: "item", id: "cotizaciones", label: { es: "Cotizaciones", en: "Quotes" }, icon: Receipt },
+  { type: "item", id: "plantillas", label: { es: "Plantillas", en: "Templates" }, icon: MessageSquare },
+  { type: "label", text: { es: "VENTAS", en: "SALES" } },
+  { type: "item", id: "vendedores", label: { es: "Vendedores", en: "Sellers" }, icon: Users },
+  { type: "item", id: "oportunidades", label: { es: "Oportunidades", en: "Opportunities" }, icon: Target },
+  { type: "item", id: "llamadas", label: { es: "Llamadas", en: "Calls" }, icon: Phone },
+  { type: "item", id: "email", label: { es: "Email", en: "Email" }, icon: Mail },
+  { type: "item", id: "finanzas", label: { es: "Finanzas", en: "Finances" }, icon: DollarSign },
+  { type: "item", id: "novy", label: { es: "NOVY", en: "NOVY" }, icon: Bot, badge: 7 },
 ];
 
 const AppSidebar = ({ activePage, onNavigate, open, onClose }: AppSidebarProps) => {
@@ -39,12 +48,19 @@ const AppSidebar = ({ activePage, onNavigate, open, onClose }: AppSidebarProps) 
           <span className="text-2xl font-bold tracking-tight" style={{ color: "var(--nebu-accent)" }}>NEBU</span>
         </div>
         <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
-          {navItems.map((item) => {
-            const active = activePage === item.id;
+          {navEntries.map((entry, i) => {
+            if (entry.type === "label") {
+              return (
+                <div key={i} className="pt-4 pb-1 px-3">
+                  <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "var(--nebu-text-secondary)" }}>{entry.text[lang]}</span>
+                </div>
+              );
+            }
+            const active = activePage === entry.id;
             return (
               <button
-                key={item.id}
-                onClick={() => { onNavigate(item.id); onClose(); }}
+                key={entry.id}
+                onClick={() => { onNavigate(entry.id); onClose(); }}
                 className="w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm transition-all duration-150"
                 style={{
                   backgroundColor: active ? "var(--nebu-active-bg)" : "transparent",
@@ -53,11 +69,11 @@ const AppSidebar = ({ activePage, onNavigate, open, onClose }: AppSidebarProps) 
                 onMouseEnter={(e) => { if (!active) { e.currentTarget.style.backgroundColor = "var(--nebu-card)"; e.currentTarget.style.color = "var(--nebu-text)"; }}}
                 onMouseLeave={(e) => { if (!active) { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = "var(--nebu-text-secondary)"; }}}
               >
-                <item.icon size={18} />
-                <span className={active ? "font-semibold" : "font-normal"}>{item.label[lang]}</span>
-                {item.badge && (
+                <entry.icon size={18} />
+                <span className={active ? "font-semibold" : "font-normal"}>{entry.label[lang]}</span>
+                {entry.badge && (
                   <span className="ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ backgroundColor: "#E53E3E", color: "#FFFFFF", minWidth: "18px", textAlign: "center" }}>
-                    {item.badge}
+                    {entry.badge}
                   </span>
                 )}
               </button>
