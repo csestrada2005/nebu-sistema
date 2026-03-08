@@ -3,7 +3,7 @@ import {
   Bot, Send, TrendingUp, AlertTriangle, Users, BarChart3, DollarSign,
   Briefcase, ArrowUpRight, Clock, Activity, Sparkles, Target, Plus,
   MessageSquare, Paperclip, CheckCircle2, Zap, FileText, ChevronRight,
-  ExternalLink
+  ExternalLink, History, PanelLeftClose, PanelLeftOpen
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCrm } from "@/contexts/CrmContext";
