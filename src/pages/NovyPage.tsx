@@ -87,7 +87,24 @@ const NovyPage = () => {
   const [expandedTask, setExpandedTask] = useState<number | null>(null);
   const [editingTask, setEditingTask] = useState<number | null>(null);
   const [editText, setEditText] = useState("");
-  const [historyFilter, setHistoryFilter] = useState("all");
+  const [chatInput, setChatInput] = useState("");
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>(MOCK_CHAT);
+  const chatScrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (chatScrollRef.current) chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
+  }, [chatMessages]);
+
+  const handleChatSend = () => {
+    if (!chatInput.trim()) return;
+    const newMsg: ChatMessage = { id: Date.now(), role: "user", text: { es: chatInput, en: chatInput }, time: new Date().toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" }) };
+    setChatMessages(prev => [...prev, newMsg]);
+    setChatInput("");
+    setTimeout(() => {
+      const reply: ChatMessage = { id: Date.now() + 1, role: "novy", text: { es: "Entendido. Déjame procesarlo — esta funcionalidad se conectará al backend pronto.", en: "Got it. Let me process that — this feature will connect to the backend soon." }, time: new Date().toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" }) };
+      setChatMessages(prev => [...prev, reply]);
+    }, 1200);
+  };
   const { lang } = useLanguage();
 
   const pendingCount = tasks.filter((t) => t.status === "pending" || t.status === "modified").length;
