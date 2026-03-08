@@ -327,6 +327,46 @@ const NovyPage = () => {
           </div>
         </div>
       )}
+
+      {activeTab === "chat" && (
+        <div className="flex flex-col rounded-lg overflow-hidden" style={{ backgroundColor: "#111", border: "1px solid #2a2a2a", height: "calc(100vh - 280px)", minHeight: "400px" }}>
+          <div ref={chatScrollRef} className="flex-1 overflow-y-auto p-4 space-y-4">
+            {chatMessages.map((msg) => (
+              <div key={msg.id} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                <div className="flex items-start gap-2 max-w-[80%]">
+                  {msg.role === "novy" && (
+                    <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-1" style={{ background: "linear-gradient(135deg, #1a1a1a, #2a2a2a)", border: "1.5px solid #E53E3E" }}>
+                      <Bot size={14} style={{ color: "#E53E3E" }} />
+                    </div>
+                  )}
+                  <div>
+                    <div className={`text-sm leading-relaxed whitespace-pre-line rounded-lg px-3.5 py-2.5 ${msg.role === "user" ? "" : ""}`}
+                      style={msg.role === "user"
+                        ? { backgroundColor: "#E53E3E", color: "white" }
+                        : { backgroundColor: "#1a1a1a", color: "#e8e8e8", border: "1px solid #2a2a2a" }
+                      }>
+                      {msg.text[lang]}
+                    </div>
+                    <span className="text-[10px] mt-1 block" style={{ color: "#555" }}>{msg.time}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <form onSubmit={(e) => { e.preventDefault(); handleChatSend(); }} className="flex items-center gap-2 p-3" style={{ borderTop: "1px solid #2a2a2a" }}>
+            <input
+              value={chatInput}
+              onChange={(e) => setChatInput(e.target.value)}
+              placeholder={lang === "es" ? "Escribe a NOVY..." : "Message NOVY..."}
+              className="flex-1 bg-transparent text-sm text-white placeholder-[#555] outline-none px-3 py-2 rounded-lg"
+              style={{ backgroundColor: "#1a1a1a", border: "1px solid #333" }}
+            />
+            <button type="submit" disabled={!chatInput.trim()} className="w-9 h-9 rounded-lg flex items-center justify-center transition-colors disabled:opacity-40" style={{ backgroundColor: "#E53E3E" }}>
+              <Send size={14} className="text-white" />
+            </button>
+          </form>
+        </div>
+      )}
     </div>
   );
 };
