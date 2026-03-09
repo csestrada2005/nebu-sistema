@@ -9,29 +9,24 @@ const ProyectosPage = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold" style={{ color: "#FFFFFF" }}>
+          <h1 className="text-xl font-semibold text-foreground">
             {lang === "es" ? "Proyectos" : "Projects"}
           </h1>
-          <p className="text-sm mt-1" style={{ color: "#71717A" }}>
-            {lang === "es" ? "Gestión de proyectos activos" : "Active project management"}
+          <p className="text-sm mt-1 text-muted-foreground">
+            {lang === "es" ? "Gestiona tus proyectos y entregas" : "Manage your projects and deliveries"}
           </p>
         </div>
-        <button
-          className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200"
-          style={{ backgroundColor: "#E63946", color: "#FFFFFF" }}
-          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#C62828")}
-          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#E63946")}
-        >
-          + {lang === "es" ? "Agregar proyecto" : "Add project"}
+        <button className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
+          + {lang === "es" ? "Nuevo proyecto" : "New project"}
         </button>
       </div>
 
-      <div className="rounded-xl" style={{ backgroundColor: "#141414", border: "1px solid rgba(255,255,255,0.06)" }}>
+      <div className="rounded-xl bg-card border border-border">
         <EmptyState
           icon={FolderOpen}
-          title={{ es: "Proyectos vacío", en: "Projects empty" }}
-          subtitle={{ es: "Agrega tu primer proyecto para comenzar.", en: "Add your first project to get started." }}
-          ctaLabel={{ es: "+ Agregar proyecto", en: "+ Add project" }}
+          title={{ es: "Sin proyectos aún", en: "No projects yet" }}
+          subtitle={{ es: "Agrega tu primer proyecto para comenzar a gestionar entregas y clientes.", en: "Add your first project to start managing deliveries and clients." }}
+          ctaLabel={{ es: "+ Nuevo proyecto", en: "+ New project" }}
         />
       </div>
     </div>

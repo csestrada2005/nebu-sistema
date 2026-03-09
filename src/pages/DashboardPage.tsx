@@ -8,16 +8,16 @@ const DashboardPage = () => {
   const kpis = [
     { label: { es: "Ingresos del mes", en: "Monthly revenue" }, value: "$0", icon: DollarSign },
     { label: { es: "Proyectos activos", en: "Active projects" }, value: "0", icon: Briefcase },
-    { label: { es: "Leads en pipeline", en: "Pipeline leads" }, value: "0", icon: Users },
+    { label: { es: "Leads activos", en: "Active leads" }, value: "0", icon: Users },
     { label: { es: "Tasa de cierre", en: "Close rate" }, value: "0%", icon: TrendingUp },
   ];
 
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold" style={{ color: "#FFFFFF" }}>Dashboard</h1>
-        <p className="text-sm mt-1" style={{ color: "#71717A" }}>
-          {lang === "es" ? "Resumen general de tu CRM" : "General overview of your CRM"}
+        <h1 className="text-xl font-semibold text-foreground">Dashboard</h1>
+        <p className="text-sm mt-1 text-muted-foreground">
+          {lang === "es" ? "Resumen general de tu estudio" : "General overview of your studio"}
         </p>
       </div>
 
@@ -26,24 +26,23 @@ const DashboardPage = () => {
         {kpis.map((kpi) => (
           <div
             key={kpi.label.es}
-            className="rounded-xl p-5"
-            style={{ backgroundColor: "#141414", border: "1px solid rgba(255,255,255,0.06)" }}
+            className="rounded-xl p-5 bg-card border border-border"
           >
             <div className="flex items-center gap-2 mb-3">
-              <kpi.icon size={16} strokeWidth={1.5} style={{ color: "#71717A" }} />
-              <span className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: "#71717A" }}>
+              <kpi.icon size={15} strokeWidth={1.5} className="text-muted-foreground" />
+              <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
                 {kpi.label[lang]}
               </span>
             </div>
-            <p className="text-3xl font-bold" style={{ color: "#FFFFFF" }}>{kpi.value}</p>
+            <p className="text-2xl font-bold text-foreground">{kpi.value}</p>
           </div>
         ))}
       </div>
 
-      {/* Recent projects - empty */}
-      <div className="rounded-xl" style={{ backgroundColor: "#141414", border: "1px solid rgba(255,255,255,0.06)" }}>
-        <div className="px-6 py-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-          <h2 className="text-sm font-semibold" style={{ color: "#FFFFFF" }}>
+      {/* Recent projects */}
+      <div className="rounded-xl bg-card border border-border">
+        <div className="px-6 py-4 border-b border-border">
+          <h2 className="text-sm font-semibold text-foreground">
             {lang === "es" ? "Proyectos recientes" : "Recent projects"}
           </h2>
         </div>
@@ -54,10 +53,10 @@ const DashboardPage = () => {
         />
       </div>
 
-      {/* Next steps - empty */}
-      <div className="rounded-xl" style={{ backgroundColor: "#141414", border: "1px solid rgba(255,255,255,0.06)" }}>
-        <div className="px-6 py-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-          <h2 className="text-sm font-semibold" style={{ color: "#FFFFFF" }}>
+      {/* Next steps */}
+      <div className="rounded-xl bg-card border border-border">
+        <div className="px-6 py-4 border-b border-border">
+          <h2 className="text-sm font-semibold text-foreground">
             {lang === "es" ? "Próximos pasos" : "Next steps"}
           </h2>
         </div>
