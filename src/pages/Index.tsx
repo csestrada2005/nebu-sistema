@@ -1,98 +1,77 @@
 import { useState } from "react";
 import Topbar from "@/components/Topbar";
 import AppSidebar from "@/components/AppSidebar";
+import BottomNav from "@/components/BottomNav";
+import RestrictedPage from "@/components/RestrictedPage";
+import LoginPage from "@/pages/LoginPage";
 import type { Page } from "@/components/AppSidebar";
 import DashboardPage from "@/pages/DashboardPage";
-import ProyectosPage from "@/pages/ProyectosPage";
-import HerramientasPage from "@/pages/HerramientasPage";
 import PipelinePage from "@/pages/PipelinePage";
-import FinanzasPage from "@/pages/FinanzasPage";
-import LinkedInPage from "@/pages/LinkedInPage";
-import NovyPage from "@/pages/NovyPage";
-import EmailPage from "@/pages/EmailPage";
-import MisWebsPage from "@/pages/MisWebsPage";
-import ContactosPage from "@/pages/ContactosPage";
-import ContratosPage from "@/pages/ContratosPage";
-import CotizacionesPage from "@/pages/CotizacionesPage";
-import PlantillasPage from "@/pages/PlantillasPage";
-import VendedoresPage from "@/pages/VendedoresPage";
-import OportunidadesPage from "@/pages/OportunidadesPage";
-import LlamadasPage from "@/pages/LlamadasPage";
-import ReportesPage from "@/pages/ReportesPage";
-import ForecastPage from "@/pages/ForecastPage";
-import RendimientoPage from "@/pages/RendimientoPage";
-import CalendarioPage from "@/pages/CalendarioPage";
-import ConfiguracionPage from "@/pages/ConfiguracionPage";
-import TareasPage from "@/pages/TareasPage";
 import LeadsPage from "@/pages/LeadsPage";
-import PortalClientePage from "@/pages/PortalClientePage";
-import AutomatizacionesPage from "@/pages/AutomatizacionesPage";
-import WebhooksPage from "@/pages/WebhooksPage";
+import CotizacionesPage from "@/pages/CotizacionesPage";
+import ProyectosPage from "@/pages/ProyectosPage";
+import ContactosPage from "@/pages/ContactosPage";
+import FinanzasPage from "@/pages/FinanzasPage";
+import NovyPage from "@/pages/NovyPage";
+import ConfiguracionPage from "@/pages/ConfiguracionPage";
 import RolesPage from "@/pages/RolesPage";
 import IntegracionesPage from "@/pages/IntegracionesPage";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 
-const Index = () => {
+const CRMApp = () => {
   const [activePage, setActivePage] = useState<Page>("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { hasAccess, isLoggedIn, setIsLoggedIn } = useAuth();
 
-  const PipelineWrapper = () => (
-    <PipelinePage onViewProject={() => setActivePage("proyectos")} />
-  );
+  if (!isLoggedIn) {
+    return <LoginPage onLogin={() => setIsLoggedIn(true)} />;
+  }
 
   const pages: Record<Page, React.ComponentType> = {
     dashboard: DashboardPage,
-    proyectos: ProyectosPage,
-    pipeline: PipelineWrapper,
-    herramientas: HerramientasPage,
-    "mis-webs": MisWebsPage,
-    contactos: ContactosPage,
-    contratos: ContratosPage,
-    cotizaciones: CotizacionesPage,
-    plantillas: PlantillasPage,
-    vendedores: VendedoresPage,
-    oportunidades: OportunidadesPage,
-    llamadas: LlamadasPage,
-    reportes: ReportesPage,
-    forecast: ForecastPage,
-    rendimiento: RendimientoPage,
-    email: EmailPage,
-    finanzas: FinanzasPage,
-    linkedin: LinkedInPage,
-    novy: NovyPage,
-    calendario: CalendarioPage,
-    configuracion: ConfiguracionPage,
-    tareas: TareasPage,
+    pipeline: PipelinePage,
     leads: LeadsPage,
-    "portal-cliente": PortalClientePage,
-    automatizaciones: AutomatizacionesPage,
-    webhooks: WebhooksPage,
+    cotizaciones: CotizacionesPage,
+    proyectos: ProyectosPage,
+    contactos: ContactosPage,
+    finanzas: FinanzasPage,
+    novy: NovyPage,
+    configuracion: ConfiguracionPage,
     roles: RolesPage,
     integraciones: IntegracionesPage,
   };
 
-  const ActiveComponent = pages[activePage];
+  const canAccess = hasAccess(activePage);
+  const ActiveComponent = canAccess ? pages[activePage] : () => <RestrictedPage onGoBack={() => setActivePage("dashboard")} />;
 
   return (
-    <LanguageProvider>
-      <div className="h-screen flex overflow-hidden" style={{ backgroundColor: "var(--nebu-bg)" }}>
-        <AppSidebar
-          activePage={activePage}
-          onNavigate={(page) => { setActivePage(page); setSidebarOpen(false); }}
-          open={sidebarOpen}
-          onClose={() => setSidebarOpen(false)}
-        />
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <Topbar onToggleSidebar={() => setSidebarOpen((p) => !p)} activePage={activePage} />
-          <main className="flex-1 overflow-y-auto p-6 md:p-8" style={{ backgroundColor: "var(--nebu-bg)" }}>
-            <div key={activePage} className="animate-fade-in">
-              <ActiveComponent />
-            </div>
-          </main>
-        </div>
+    <div className="h-screen flex overflow-hidden" style={{ backgroundColor: "#0D0D0D" }}>
+      <AppSidebar
+        activePage={activePage}
+        onNavigate={(page) => { setActivePage(page); setSidebarOpen(false); }}
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <Topbar onToggleSidebar={() => setSidebarOpen((p) => !p)} activePage={activePage} />
+        <main className="flex-1 overflow-y-auto p-6 md:p-8 pb-20 lg:pb-8" style={{ backgroundColor: "#0D0D0D" }}>
+          <div key={activePage} className="animate-fade-in">
+            <ActiveComponent />
+          </div>
+        </main>
       </div>
-    </LanguageProvider>
+      <BottomNav activePage={activePage} onNavigate={setActivePage} />
+    </div>
   );
 };
+
+const Index = () => (
+  <LanguageProvider>
+    <AuthProvider>
+      <CRMApp />
+    </AuthProvider>
+  </LanguageProvider>
+);
 
 export default Index;
