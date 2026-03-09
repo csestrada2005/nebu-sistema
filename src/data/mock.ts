@@ -17,14 +17,10 @@ export const funnelSteps = [
   "Propuesta",
   "Contrato",
   "Anticipo",
-  "Research",
-  "Diseño V1",
-  "Revisión",
-  "Diseño V2",
+  "Diseño",
   "Desarrollo",
   "QA",
   "Entrega",
-  "Cierre",
 ];
 
 export interface PipelineLead {
@@ -44,5 +40,4 @@ export const servicios = [
   { label: "Landing page", rango: "$8,000 — $12,000 MXN" },
   { label: "Social Media (mensual)", rango: "$5,000 — $10,000 MXN" },
   { label: "Web + SEO", rango: "$12,000 — $20,000 MXN" },
-  { label: "Identidad + Web vitrina", rango: "$10,000 — $18,000 MXN" },
 ];
