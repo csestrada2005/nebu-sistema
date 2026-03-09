@@ -1,4 +1,4 @@
-/* NEBU CRM – Global Design Tokens */
+/* NEBU — Global Design Tokens */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
@@ -7,46 +7,78 @@
 
 @layer base {
   :root {
-    --background: 0 0% 4%;
-    --foreground: 0 0% 100%;
-    --card: 0 0% 10%;
-    --card-foreground: 0 0% 100%;
-    --popover: 0 0% 10%;
-    --popover-foreground: 0 0% 100%;
-    --primary: 0 74% 57%;
+    --background: 0 0% 5%;
+    --foreground: 0 0% 95%;
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 95%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 355 78% 56%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 7%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 0 0% 7%;
-    --muted-foreground: 0 0% 53%;
-    --accent: 0 0% 7%;
-    --accent-foreground: 0 0% 100%;
+    --secondary: 240 10% 10%;
+    --secondary-foreground: 0 0% 90%;
+    --muted: 240 6% 10%;
+    --muted-foreground: 240 5% 50%;
+    --accent: 240 10% 12%;
+    --accent-foreground: 0 0% 95%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 17%;
-    --input: 0 0% 17%;
-    --ring: 0 74% 57%;
-    --radius: 0.5rem;
+    --border: 240 6% 14%;
+    --input: 240 6% 14%;
+    --ring: 355 78% 56%;
+    --radius: 0.625rem;
 
     /* Sidebar */
-    --sidebar-background: 0 0% 5%;
-    --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 0 74% 57%;
+    --sidebar-background: 240 10% 4%;
+    --sidebar-foreground: 0 0% 90%;
+    --sidebar-primary: 355 78% 56%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 10%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 0 0% 17%;
-    --sidebar-ring: 0 74% 57%;
+    --sidebar-accent: 240 10% 10%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 240 6% 14%;
+    --sidebar-ring: 355 78% 56%;
 
-    /* NEBU palette */
-    --nebu-bg: #0a0a0a;
-    --nebu-surface: #111111;
-    --nebu-card: #1a1a1a;
-    --nebu-accent: #E53E3E;
-    --nebu-text: #FFFFFF;
-    --nebu-text-secondary: #888888;
-    --nebu-border: #2a2a2a;
-    --nebu-active-bg: #1f1f1f;
+    /* NEBU SaaS palette */
+    --nebu-bg: #0a0a0f;
+    --nebu-surface: #111116;
+    --nebu-card: #16161d;
+    --nebu-accent: #E54D5B;
+    --nebu-accent-soft: #E54D5B22;
+    --nebu-text: #F0F0F5;
+    --nebu-text-secondary: #71717A;
+    --nebu-border: rgba(255, 255, 255, 0.06);
+    --nebu-active-bg: #1a1a24;
+  }
+
+  .light {
+    --background: 0 0% 98%;
+    --foreground: 240 10% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 10%;
+    --primary: 355 78% 56%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 240 10% 10%;
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 5% 40%;
+    --accent: 240 5% 96%;
+    --accent-foreground: 240 10% 10%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 355 78% 56%;
+
+    --sidebar-background: 0 0% 99%;
+    --sidebar-foreground: 240 10% 10%;
+    --sidebar-primary: 355 78% 56%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 5% 96%;
+    --sidebar-accent-foreground: 240 10% 10%;
+    --sidebar-border: 240 6% 90%;
+    --sidebar-ring: 355 78% 56%;
   }
 
   * {
@@ -56,47 +88,49 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
 /* Custom Scrollbars */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #333333 transparent;
+  scrollbar-color: hsl(var(--border)) transparent;
 }
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #333333;
+  background: hsl(var(--border));
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #555555;
+  background: hsl(var(--muted-foreground));
 }
 
-/* Fade transition 150ms */
+/* Fade transition */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
 }
 .animate-fade-in {
-  animation: fadeIn 150ms ease-out;
+  animation: fadeIn 200ms ease-out;
 }
 
 /* Focus ring */
 *:focus-visible {
-  outline: 2px solid var(--nebu-accent);
+  outline: 2px solid hsl(var(--ring));
   outline-offset: 2px;
 }
 
 /* Selection */
 ::selection {
-  background: rgba(229, 62, 62, 0.3);
-  color: white;
+  background: hsl(var(--primary) / 0.25);
+  color: hsl(var(--foreground));
 }

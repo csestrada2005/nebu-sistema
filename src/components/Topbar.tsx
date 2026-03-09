@@ -9,34 +9,26 @@ interface TopbarProps {
 
 const pageLabels: Record<Page, Record<"es" | "en", string>> = {
   dashboard: { es: "Dashboard", en: "Dashboard" },
-  pipeline: { es: "Pipeline", en: "Pipeline" },
-  leads: { es: "Leads", en: "Leads" },
-  cotizaciones: { es: "Cotizaciones", en: "Quotes" },
   proyectos: { es: "Proyectos", en: "Projects" },
-  contactos: { es: "Contactos", en: "Contacts" },
-  finanzas: { es: "Finanzas", en: "Finances" },
-  novy: { es: "NOVY", en: "NOVY" },
-  configuracion: { es: "Configuración", en: "Settings" },
-  roles: { es: "Roles y Accesos", en: "Roles & Access" },
-  integraciones: { es: "Integraciones", en: "Integrations" },
+  pagos: { es: "Pagos", en: "Payments" },
+  metricas: { es: "Métricas", en: "Metrics" },
+  "ai-studio": { es: "AI Studio", en: "AI Studio" },
+  settings: { es: "Ajustes", en: "Settings" },
 };
 
 const Topbar = ({ onToggleSidebar, activePage }: TopbarProps) => {
   const { lang, toggleLang } = useLanguage();
 
   return (
-    <header
-      className="h-14 flex items-center justify-between px-6 z-50 shrink-0"
-      style={{ backgroundColor: "#0D0D0D", borderBottom: "1px solid rgba(255,255,255,0.06)" }}
-    >
+    <header className="h-14 flex items-center justify-between px-6 z-50 shrink-0 bg-background border-b border-border">
       <div className="flex items-center gap-3">
         <button onClick={onToggleSidebar} className="lg:hidden p-1.5 rounded transition-opacity hover:opacity-80" aria-label="Toggle sidebar">
-          <Menu size={20} style={{ color: "#FFFFFF" }} />
+          <Menu size={20} className="text-foreground" />
         </button>
         <nav className="flex items-center gap-1.5 text-sm">
-          <span style={{ color: "#71717A" }}>CRM</span>
-          <ChevronRight size={14} style={{ color: "#71717A" }} />
-          <span className="font-semibold" style={{ color: "#FFFFFF" }}>
+          <span className="text-muted-foreground">NEBU</span>
+          <ChevronRight size={14} className="text-muted-foreground" />
+          <span className="font-semibold text-foreground">
             {pageLabels[activePage]?.[lang] || activePage}
           </span>
         </nav>
@@ -45,12 +37,9 @@ const Topbar = ({ onToggleSidebar, activePage }: TopbarProps) => {
       <div className="flex items-center gap-3">
         <button
           onClick={toggleLang}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-colors"
-          style={{ backgroundColor: "#141414", border: "1px solid rgba(255,255,255,0.06)", color: "#FFFFFF" }}
-          onMouseEnter={(e) => (e.currentTarget.style.borderColor = "#E63946")}
-          onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)")}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold bg-card border border-border text-foreground hover:border-primary transition-colors"
         >
-          <Globe size={13} style={{ color: "#71717A" }} />
+          <Globe size={13} className="text-muted-foreground" />
           {lang === "es" ? "EN" : "ES"}
         </button>
       </div>

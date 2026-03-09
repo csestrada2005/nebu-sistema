@@ -12,10 +12,10 @@ interface AuthContextType {
 }
 
 const ACCESS_MAP: Record<Role, Page[]> = {
-  admin: ["dashboard", "pipeline", "leads", "cotizaciones", "proyectos", "contactos", "finanzas", "novy", "configuracion", "roles", "integraciones"],
-  vendedor: ["dashboard", "pipeline", "leads", "cotizaciones", "contactos", "novy"],
-  dev: ["dashboard", "proyectos", "contactos", "novy"],
-  cliente: ["cotizaciones", "proyectos"],
+  admin: ["dashboard", "proyectos", "pagos", "metricas", "ai-studio", "settings"],
+  vendedor: ["dashboard", "proyectos", "pagos", "metricas", "ai-studio"],
+  dev: ["dashboard", "proyectos", "ai-studio", "settings"],
+  cliente: ["dashboard", "proyectos"],
 };
 
 const AuthContext = createContext<AuthContextType>({

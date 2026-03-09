@@ -13,26 +13,20 @@ const EmptyState = ({ icon: Icon, title, subtitle, ctaLabel, onCta }: EmptyState
   const { lang } = useLanguage();
 
   return (
-    <div className="flex flex-col items-center justify-center py-20 px-4">
-      <div
-        className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5"
-        style={{ backgroundColor: "rgba(230,57,70,0.08)", border: "1px solid rgba(230,57,70,0.15)" }}
-      >
-        <Icon size={28} strokeWidth={1.5} style={{ color: "#E63946" }} />
+    <div className="flex flex-col items-center justify-center py-24 px-4">
+      <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 bg-primary/5 border border-primary/10">
+        <Icon size={26} strokeWidth={1.5} className="text-primary" />
       </div>
-      <h3 className="text-lg font-semibold mb-1.5" style={{ color: "#FFFFFF" }}>
+      <h3 className="text-base font-semibold mb-1.5 text-foreground">
         {title[lang]}
       </h3>
-      <p className="text-sm text-center max-w-sm mb-6" style={{ color: "#71717A" }}>
+      <p className="text-sm text-center max-w-xs mb-6 text-muted-foreground">
         {subtitle[lang]}
       </p>
       {ctaLabel && (
         <button
           onClick={onCta}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200"
-          style={{ backgroundColor: "#E63946", color: "#FFFFFF" }}
-          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#C62828")}
-          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#E63946")}
+          className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
         >
           {ctaLabel[lang]}
         </button>
