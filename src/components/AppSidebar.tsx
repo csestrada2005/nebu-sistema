@@ -137,7 +137,7 @@ const AppSidebar = ({ activePage, onNavigate, open, onClose }: AppSidebarProps) 
             </>
           ) : (
             <button
-              onClick={() => setIsLoggedIn(false)}
+              onClick={() => signOut()}
               className="w-full flex items-center justify-center py-2 rounded-lg text-muted-foreground hover:text-primary transition-colors"
               title={lang === "es" ? "Cerrar sesión" : "Log out"}
             >
