@@ -37,7 +37,7 @@ const ROLE_LABELS: Record<Role, Record<"es" | "en", string>> = {
 
 const AppSidebar = ({ activePage, onNavigate, open, onClose }: AppSidebarProps) => {
   const { lang } = useLanguage();
-  const { role, setRole, hasAccess, setIsLoggedIn } = useAuth();
+  const { role, setRole, hasAccess, signOut } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
 
   const sidebarWidth = collapsed ? 64 : 220;
