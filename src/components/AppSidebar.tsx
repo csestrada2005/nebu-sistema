@@ -37,7 +37,7 @@ const ROLE_LABELS: Record<Role, Record<"es" | "en", string>> = {
 
 const AppSidebar = ({ activePage, onNavigate, open, onClose }: AppSidebarProps) => {
   const { lang } = useLanguage();
-  const { role, setRole, hasAccess, setIsLoggedIn } = useAuth();
+  const { role, setRole, hasAccess, signOut } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
 
   const sidebarWidth = collapsed ? 64 : 220;
@@ -128,7 +128,7 @@ const AppSidebar = ({ activePage, onNavigate, open, onClose }: AppSidebarProps) 
                 </div>
               </div>
               <button
-                onClick={() => setIsLoggedIn(false)}
+                onClick={() => signOut()}
                 className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-muted-foreground hover:text-primary hover:bg-primary/5 transition-colors"
               >
                 <LogOut size={14} />
@@ -137,7 +137,7 @@ const AppSidebar = ({ activePage, onNavigate, open, onClose }: AppSidebarProps) 
             </>
           ) : (
             <button
-              onClick={() => setIsLoggedIn(false)}
+              onClick={() => signOut()}
               className="w-full flex items-center justify-center py-2 rounded-lg text-muted-foreground hover:text-primary transition-colors"
               title={lang === "es" ? "Cerrar sesión" : "Log out"}
             >

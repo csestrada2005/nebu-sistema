@@ -17,10 +17,18 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 const CRMApp = () => {
   const [activePage, setActivePage] = useState<Page>("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { hasAccess, isLoggedIn, setIsLoggedIn } = useAuth();
+  const { hasAccess, isLoggedIn, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-muted-foreground text-sm animate-pulse">Cargando...</div>
+      </div>
+    );
+  }
 
   if (!isLoggedIn) {
-    return <LoginPage onLogin={() => setIsLoggedIn(true)} />;
+    return <LoginPage />;
   }
 
   const pages: Record<Page, React.ComponentType> = {
