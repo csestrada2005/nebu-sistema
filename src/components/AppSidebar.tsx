@@ -128,7 +128,7 @@ const AppSidebar = ({ activePage, onNavigate, open, onClose }: AppSidebarProps) 
                 </div>
               </div>
               <button
-                onClick={() => setIsLoggedIn(false)}
+                onClick={() => signOut()}
                 className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-muted-foreground hover:text-primary hover:bg-primary/5 transition-colors"
               >
                 <LogOut size={14} />
