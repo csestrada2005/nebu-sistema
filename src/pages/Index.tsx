@@ -13,6 +13,7 @@ import AIStudioPage from "@/pages/AIStudioPage";
 import SettingsPage from "@/pages/SettingsPage";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { CrmProvider } from "@/contexts/CrmContext";
 
 const CRMApp = () => {
   const [activePage, setActivePage] = useState<Page>("dashboard");
@@ -44,23 +45,25 @@ const CRMApp = () => {
   const ActiveComponent = canAccess ? pages[activePage] : () => <RestrictedPage onGoBack={() => setActivePage("dashboard")} />;
 
   return (
-    <div className="h-screen flex overflow-hidden bg-background">
-      <AppSidebar
-        activePage={activePage}
-        onNavigate={(page) => { setActivePage(page); setSidebarOpen(false); }}
-        open={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-      />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <Topbar onToggleSidebar={() => setSidebarOpen((p) => !p)} activePage={activePage} />
-        <main className="flex-1 overflow-y-auto p-6 md:p-8 pb-20 lg:pb-8">
-          <div key={activePage} className="animate-fade-in">
-            <ActiveComponent />
-          </div>
-        </main>
+    <CrmProvider>
+      <div className="h-screen flex overflow-hidden bg-background">
+        <AppSidebar
+          activePage={activePage}
+          onNavigate={(page) => { setActivePage(page); setSidebarOpen(false); }}
+          open={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+        />
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <Topbar onToggleSidebar={() => setSidebarOpen((p) => !p)} activePage={activePage} />
+          <main className="flex-1 overflow-y-auto p-6 md:p-8 pb-20 lg:pb-8">
+            <div key={activePage} className="animate-fade-in">
+              <ActiveComponent />
+            </div>
+          </main>
+        </div>
+        <BottomNav activePage={activePage} onNavigate={setActivePage} />
       </div>
-      <BottomNav activePage={activePage} onNavigate={setActivePage} />
-    </div>
+    </CrmProvider>
   );
 };
 
