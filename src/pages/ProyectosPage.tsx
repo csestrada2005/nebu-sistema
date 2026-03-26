@@ -126,7 +126,7 @@ const ProyectosPage = () => {
           )}
           {detailTab !== "general" && (
             <EmptyState
-              icon={DETAIL_TABS.find(t => t.id === detailTab)?.icon || FileText}
+              icon={FileText}
               title={{ es: "Próximamente", en: "Coming soon" }}
               subtitle={{ es: "Esta sección estará disponible pronto.", en: "This section will be available soon." }}
             />
