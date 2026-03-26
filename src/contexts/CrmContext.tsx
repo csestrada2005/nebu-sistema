@@ -1,147 +1,122 @@
-import { createContext, useContext, useState, useCallback, ReactNode } from "react";
-import {
-  Project,
-  PipelineLead,
-  projects as initialProjects,
-  pipelineLeads as initialLeads,
-  funnelSteps,
-  servicios,
-} from "@/data/mock";
+import { createContext, useContext, useState, useCallback, useEffect, ReactNode } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
-export interface CrmState {
-  projects: Project[];
-  leads: PipelineLead[];
-  funnelSteps: string[];
-  servicios: typeof servicios;
+export interface Project {
+  id: string;
+  name: string;
+  client_name: string;
+  project_type: string;
+  value: number;
+  status: string;
+  due_date: string | null;
+  notes: string;
+  created_at: string;
+  user_id: string;
 }
 
-export interface CrmActions {
-  updateProjectStatus: (projectId: string, status: Project["estado"]) => string;
-  advanceFunnel: (projectId: string) => string;
-  addLead: (lead: Omit<PipelineLead, "id">) => string;
-  moveLead: (leadId: string, etapa: PipelineLead["etapa"]) => string;
-  addProject: (project: Omit<Project, "id">) => string;
-  updateProject: (projectId: string, updates: Partial<Project>) => string;
+export interface Lead {
+  id: string;
+  nombre: string;
+  empresa: string;
+  email: string;
+  telefono: string;
+  servicio: string;
+  valor_estimado: number;
+  fuente: string;
+  estado: string;
+  notas: string;
+  linkedin_url: string;
+  ultimo_contacto: string | null;
+  created_at: string;
+  user_id: string;
+}
+
+export interface Task {
+  id: string;
+  title: string;
+  status: string;
+  priority: string;
+  assignee: string;
+  due_date: string | null;
+  created_at: string;
+  user_id: string;
 }
 
 interface CrmContextValue {
-  state: CrmState;
-  actions: CrmActions;
+  projects: Project[];
+  leads: Lead[];
+  tasks: Task[];
+  loading: boolean;
+  refreshProjects: () => Promise<void>;
+  refreshLeads: () => Promise<void>;
+  refreshTasks: () => Promise<void>;
+  refreshAll: () => Promise<void>;
   buildContextSummary: () => string;
 }
 
 const CrmContext = createContext<CrmContextValue | null>(null);
 
 export function CrmProvider({ children }: { children: ReactNode }) {
-  const [projects, setProjects] = useState<Project[]>(initialProjects);
-  const [leads, setLeads] = useState<PipelineLead[]>(initialLeads);
+  const { user } = useAuth();
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const updateProjectStatus = useCallback((projectId: string, status: Project["estado"]): string => {
-    let found = false;
-    setProjects((prev) =>
-      prev.map((p) => {
-        if (p.id === projectId) {
-          found = true;
-          return { ...p, estado: status };
-        }
-        return p;
-      })
-    );
-    return found
-      ? `✅ Proyecto ${projectId} actualizado a "${status}".`
-      : `⚠ Proyecto ${projectId} no encontrado.`;
-  }, []);
+  const refreshProjects = useCallback(async () => {
+    if (!user) return;
+    const { data } = await supabase.from("projects").select("*").order("created_at", { ascending: false });
+    if (data) setProjects(data as unknown as Project[]);
+  }, [user]);
 
-  const advanceFunnel = useCallback((projectId: string): string => {
-    let result = "";
-    setProjects((prev) =>
-      prev.map((p) => {
-        if (p.id === projectId) {
-          if (p.pasoFunnel >= 12) {
-            result = `⚠ ${p.cliente} ya está en el último paso (${funnelSteps[11]}).`;
-            return p;
-          }
-          const newStep = p.pasoFunnel + 1;
-          result = `✅ ${p.cliente} avanzó al paso ${newStep}/12 (${funnelSteps[newStep - 1]}).`;
-          return { ...p, pasoFunnel: newStep };
-        }
-        return p;
-      })
-    );
-    return result || `⚠ Proyecto ${projectId} no encontrado.`;
-  }, []);
+  const refreshLeads = useCallback(async () => {
+    if (!user) return;
+    const { data } = await supabase.from("leads").select("*").order("created_at", { ascending: false });
+    if (data) setLeads(data as unknown as Lead[]);
+  }, [user]);
 
-  const addLead = useCallback((lead: Omit<PipelineLead, "id">): string => {
-    const newId = `L-${String(leads.length + 1).padStart(3, "0")}`;
-    const newLead: PipelineLead = { ...lead, id: newId };
-    setLeads((prev) => [...prev, newLead]);
-    return `✅ Lead "${lead.nombre}" agregado como ${newId} en etapa "${lead.etapa}".`;
-  }, [leads.length]);
+  const refreshTasks = useCallback(async () => {
+    if (!user) return;
+    const { data } = await supabase.from("tasks").select("*").order("created_at", { ascending: false });
+    if (data) setTasks(data as unknown as Task[]);
+  }, [user]);
 
-  const moveLead = useCallback((leadId: string, etapa: PipelineLead["etapa"]): string => {
-    let found = false;
-    setLeads((prev) =>
-      prev.map((l) => {
-        if (l.id === leadId) {
-          found = true;
-          return { ...l, etapa };
-        }
-        return l;
-      })
-    );
-    return found
-      ? `✅ Lead ${leadId} movido a "${etapa}".`
-      : `⚠ Lead ${leadId} no encontrado.`;
-  }, []);
+  const refreshAll = useCallback(async () => {
+    setLoading(true);
+    await Promise.all([refreshProjects(), refreshLeads(), refreshTasks()]);
+    setLoading(false);
+  }, [refreshProjects, refreshLeads, refreshTasks]);
 
-  const addProject = useCallback((project: Omit<Project, "id">): string => {
-    const newId = `NB-${String(projects.length + 1).padStart(3, "0")}`;
-    setProjects((prev) => [...prev, { ...project, id: newId }]);
-    return `✅ Proyecto "${project.cliente}" creado como ${newId}.`;
-  }, [projects.length]);
-
-  const updateProject = useCallback((projectId: string, updates: Partial<Project>): string => {
-    let found = false;
-    setProjects((prev) =>
-      prev.map((p) => {
-        if (p.id === projectId) {
-          found = true;
-          return { ...p, ...updates };
-        }
-        return p;
-      })
-    );
-    return found
-      ? `✅ Proyecto ${projectId} actualizado.`
-      : `⚠ Proyecto ${projectId} no encontrado.`;
-  }, []);
+  useEffect(() => {
+    if (user) {
+      refreshAll();
+    } else {
+      setProjects([]);
+      setLeads([]);
+      setTasks([]);
+      setLoading(false);
+    }
+  }, [user]);
 
   const buildContextSummary = useCallback((): string => {
-    const projSummary = projects
-      .map(
-        (p) =>
-          `— ${p.id} ${p.cliente}: ${p.servicio} · $${p.precio.toLocaleString()} MXN · Paso ${p.pasoFunnel}/12 (${funnelSteps[p.pasoFunnel - 1]}) · Estado: ${p.estado} · Entrega: ${p.entregaEst} · Responsable: ${p.responsable}${p.estado === "revisión" ? " ⚠ En revisión" : ""}`
-      )
-      .join("\n");
+    const projSummary = projects.length > 0
+      ? projects.map(p => `— ${p.name} (${p.client_name}): ${p.project_type} · $${p.value.toLocaleString()} · Status: ${p.status} · Due: ${p.due_date || "N/A"}`).join("\n")
+      : "No projects yet.";
 
-    const leadSummary = leads
-      .map(
-        (l) =>
-          `— ${l.id} ${l.nombre}: ${l.servicio} · $${l.precio.toLocaleString()} · ${l.etapa} (${l.owner})`
-      )
-      .join("\n");
+    const leadSummary = leads.length > 0
+      ? leads.map(l => `— ${l.nombre} (${l.empresa}): ${l.servicio} · $${l.valor_estimado.toLocaleString()} · ${l.estado}`).join("\n")
+      : "No leads yet.";
 
-    return `## Proyectos activos (${projects.length})\n${projSummary}\n\n## Pipeline de ventas (${leads.length} leads)\n${leadSummary}`;
-  }, [projects, leads]);
+    const taskSummary = tasks.length > 0
+      ? tasks.map(t => `— ${t.title}: ${t.status} · ${t.priority} priority · Assigned: ${t.assignee || "Unassigned"}`).join("\n")
+      : "No tasks yet.";
+
+    return `## Projects (${projects.length})\n${projSummary}\n\n## Leads (${leads.length})\n${leadSummary}\n\n## Tasks (${tasks.length})\n${taskSummary}`;
+  }, [projects, leads, tasks]);
 
   return (
-    <CrmContext.Provider
-      value={{
-        state: { projects, leads, funnelSteps, servicios },
-        actions: { updateProjectStatus, advanceFunnel, addLead, moveLead, addProject, updateProject },
-        buildContextSummary,
-      }}
-    >
+    <CrmContext.Provider value={{ projects, leads, tasks, loading, refreshProjects, refreshLeads, refreshTasks, refreshAll, buildContextSummary }}>
       {children}
     </CrmContext.Provider>
   );
